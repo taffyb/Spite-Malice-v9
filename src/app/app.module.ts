@@ -4,10 +4,18 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CardComponent } from './card/card.component';
+import { PileComponent } from './pile/pile.component';
+import { PlayAreaComponent } from './play-area/play-area.component';
+import { PlayerStackComponent } from './player-stack/player-stack.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CardComponent,
+    PileComponent,
+    PlayAreaComponent,
+    PlayerStackComponent
   ],
   imports: [
     BrowserModule,
