@@ -1,0 +1,22 @@
+.card{
+    width: 50px;
+    height: 75px;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding:4px; 
+}
+.selectable{
+	cursor:pointer;
+}
+.from{
+	background:aqua;
+}
+.selectableFrom:hover{
+	background:aqua;
+}
+.selectableTo:hover{
+	background:yellow;
+}
