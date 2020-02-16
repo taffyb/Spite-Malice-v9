@@ -1,44 +1,44 @@
 import { Component, OnInit } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import { trigger, state, style, transition, animate} from '@angular/animations';
+import {Animations} from './animate';
 
 @Component({
   selector: 'app-animationdemo',
   templateUrl: './animationdemo.component.html',
   styleUrls: ['./animationdemo.component.css'],
-  animations: [
-               trigger('changeDivSize', [
-                 state('initial', style({
-                   backgroundColor: '{{color}}',
-                   width: '100px',
-                   height: '100px',
-                   top:'{{sTop}}px',
-                   left:'{{sLeft}}px',
-                   position:'absolute',
-                   opacity:'0%'
-                 }),{params:{sTop:100,sLeft:100,color:'green'}}),
-                 state('final', style({
-                   backgroundColor: 'red',
-                   width: '100px',
-                   height: '100px',
-                   top:'{{top}}px',
-                   left:'{{left}}px',
-                   position:'absolute',
-                   opacity:'100%'
-                 }),{params:{top:500,left:500}}),
-                 transition('initial=>final', animate('500ms')),
-                 transition('final=>initial', animate('1000ms'))
-               ]),
-             ]
+  animations: Animations
 })
-export class AnimationdemoComponent implements OnInit {
-    currentState = 'initial';
-
-    changeState() {
-      this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
+export class AnimationdemoComponent {
+    title = 'Spite-Malice';
+    currentState="";
+    divState="initial";
+    iTop=10;
+    iLeft=10;
+    fTop=0;
+    fLeft=0;
+    
+    constructor(){  
     }
-  constructor() { }
-
-  ngOnInit() {
-  }
+    setTarget(evt){
+        this.divState= 'final';
+        if(evt){
+            this.fTop=evt.clientY;
+            this.fLeft=evt.clientX;
+        }
+    }
+    setInitial(evt){
+        this.divState= 'initial';
+        if(evt){
+            this.iTop=evt.clientY;
+            this.iLeft=evt.clientX;
+        }
+        evt.preventDefault();
+    }
+    
+    toggleState(){
+        this.divState= this.divState!='initial'?'initial':'final';
+        console.log(`this.divState = ${this.divState}`);
+        
+    }
 
 }

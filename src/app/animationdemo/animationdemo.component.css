@@ -1,5 +1,5 @@
-.box{
-	width:100px;
-	height:100px;
-	background:blue;
+.play-area{
+	width:100%;
+	height:95%;
+	border:5px solid red;
 }
