@@ -4,8 +4,7 @@ import {Animations} from './animate';
 @Component({
   selector: 'app-card-animation',
   templateUrl: './card-animation.component.html',
-  styleUrls: ['./card-animation.component.css'],
-  animations: Animations
+  styleUrls: ['./card-animation.component.css']
 })
 export class CardAnimationComponent implements OnInit {
     moves:{cardNo:number,sTop:number,sLeft:number,fTop:number,fLeft:number}[]=[];
