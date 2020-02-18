@@ -1,7 +1,7 @@
 import {Component, OnInit,Input, Output, EventEmitter, HostBinding, ViewChild, ElementRef } from '@angular/core';
-import { NgModule } from '@angular/core';
-import {Options} from '../classes/options';
-import {SelectedCard} from '../classes/selected-card';
+import { NgModule,NO_ERRORS_SCHEMA,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {Options} from '../classes/options'
+import {SelectedCard} from '../classes/selected-card'
 
 @Component({
     selector: 'card',
@@ -14,7 +14,7 @@ import {SelectedCard} from '../classes/selected-card';
     @Input()pos:number;
     @Input()options:Options = new Options();
     @Output()onSelect:EventEmitter<SelectedCard> = new EventEmitter<SelectedCard>();
-    @ViewChild('cardref',{ static: true }) cardref:ElementRef;
+    @ViewChild('cardref',{static:false}) cardref:ElementRef;
         
     constructor() {
     }

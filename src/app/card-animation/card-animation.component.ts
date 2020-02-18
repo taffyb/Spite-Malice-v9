@@ -61,7 +61,7 @@ export class CardAnimationComponent implements OnInit {
        }       
     }
     animationDone(evt){
-//        console.log(`${JSON.stringify(evt)}`);
+        console.log(`${JSON.stringify(evt)}`);
         if(evt.fromState=='initial'){
           this.cards.push(this.m);
           this.m=this.NO_CARD;

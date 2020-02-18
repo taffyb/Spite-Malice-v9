@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output,EventEmitter } from '@angular/core';
+import {Options} from '../classes/options';
+import {SelectedCard} from '../classes/selected-card'
+import {Card} from '../classes/cards';
 
 @Component({
   selector: 'app-pile',
@@ -6,10 +9,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./pile.component.css']
 })
 export class PileComponent implements OnInit {
+  @Input()pos:number;
+  @Input()cards:Card[];
+  @Input()options:Options;
+  @Output()onSelect:EventEmitter<SelectedCard> = new EventEmitter<SelectedCard>();
 
   constructor() { }
 
   ngOnInit() {
   }
 
+  select(selectedCard:SelectedCard){
+      console.log(`Pile-selected Card: ${JSON.stringify(selectedCard)}`);
+      this.onSelect.emit(selectedCard);
+  }
 }

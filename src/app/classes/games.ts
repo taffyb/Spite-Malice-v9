@@ -12,7 +12,7 @@ export interface IGameModel {
     player2Uuid: string;
 }
 
-export class Game implements IGameModel,IMoveSubscriber{
+export class Game implements IGameModel{
     uuid: string;
     name: string;
     player1Uuid: string;
@@ -46,9 +46,16 @@ export class Game implements IGameModel,IMoveSubscriber{
 //      }
 //    }
       
-    performMoves(gameUuid: string, moves: IMoveModel[]) {
-        if(gameUuid = this.uuid){
-            console.log(`game.perfromMoves:${JSON.stringify(moves)}`);
-        }
+    performMove(move: IMoveModel) {
+        console.log(`game.perfromMove:${JSON.stringify(move)}`);
+        this.addCard(move.card,move.to);
+        this.removeCard(move.from);
+    }
+    
+    private addCard(card:number,position:number){
+        this.cardPositions[position].push(new Card(card,position));
+    }
+    private removeCard(position:number){
+        this.cardPositions[position].pop();
     }
 }
