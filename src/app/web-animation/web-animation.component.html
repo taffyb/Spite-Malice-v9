@@ -1,0 +1,7 @@
+<div class="play-area" (click)="toggleState($event)">	
+	<!--  <app-animationdemo [@changeDivSize]="{value:divState,params:{top:500,left:1000}}"></app-animationdemo> -->
+	<card *ngFor="let m of cards;let idx =index" 
+		 
+		[@changeDivSize]="{value:getState(idx),params:{iTop:m.sTop,iLeft:m.sLeft,fTop:m.fTop,fLeft:m.fLeft,duration:DURATION}}" 
+		[cardNo]="m.cardNo" [pos]="3"></card>
+</div>

@@ -10,6 +10,7 @@ import { PlayAreaComponent } from './play-area/play-area.component';
 import { PlayerStackComponent } from './player-stack/player-stack.component';
 import { AnimationdemoComponent } from './animationdemo/animationdemo.component';
 import { WebAnimationComponent } from './web-animation/web-animation.component';
+import { CardAnimationComponent } from './card-animation/card-animation.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { WebAnimationComponent } from './web-animation/web-animation.component';
     PlayAreaComponent,
     PlayerStackComponent,
     AnimationdemoComponent,
-    WebAnimationComponent
+    WebAnimationComponent,
+    CardAnimationComponent
   ],
   imports: [
     BrowserModule,

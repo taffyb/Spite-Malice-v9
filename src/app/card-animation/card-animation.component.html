@@ -1,0 +1,10 @@
+<div class="play-area" (click)="toggleState()">	
+	<!-- <div *ngIf="m.cardNo>=0"> {{divState}}({{m.sLeft}},{{m.sTop}})=>({{m.fLeft}},{{m.fTop}}) </div> -->
+	<card class="animate" *ngIf="m.cardNo>=0" [@changeDivSize]="{value:divState,
+												 params:{iTop:m.sTop,iLeft:m.sLeft,
+												 fTop:m.fTop,fLeft:m.fLeft,
+												 duration:DURATION}}"
+		(@changeDivSize.done)="animationDone($event)"
+		[cardNo]="m.cardNo" [pos]="3"></card>
+	<card class="card" *ngFor="let c of cards" [cardNo]="c.cardNo" [pos]="3" [style.top.px]="c.fTop" [style.left.px]="c.fLeft"></card>
+</div>
