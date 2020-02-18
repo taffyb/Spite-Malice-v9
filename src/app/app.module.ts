@@ -8,9 +8,6 @@ import { CardComponent } from './card/card.component';
 import { PileComponent } from './pile/pile.component';
 import { PlayAreaComponent } from './play-area/play-area.component';
 import { PlayerStackComponent } from './player-stack/player-stack.component';
-import { AnimationdemoComponent } from './animationdemo/animationdemo.component';
-import { WebAnimationComponent } from './web-animation/web-animation.component';
-import { CardAnimationComponent } from './card-animation/card-animation.component';
 
 @NgModule({
   declarations: [
@@ -18,10 +15,7 @@ import { CardAnimationComponent } from './card-animation/card-animation.componen
     CardComponent,
     PileComponent,
     PlayAreaComponent,
-    PlayerStackComponent,
-    AnimationdemoComponent,
-    WebAnimationComponent,
-    CardAnimationComponent
+    PlayerStackComponent
   ],
   imports: [
     BrowserModule,

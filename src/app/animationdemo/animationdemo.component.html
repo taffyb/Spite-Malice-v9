@@ -1,5 +1,0 @@
-<button *ngIf="divState=='final'" (click)="toggleState()">reset</button>
-<div class="play-area" (click)="setTarget($event)" (contextmenu)="setInitial($event)">	
-	<!--  <app-animationdemo [@changeDivSize]="{value:divState,params:{top:500,left:1000}}"></app-animationdemo> -->
-	<card  [@changeDivSize]="{value:divState,params:{iTop:iTop,iLeft:iLeft,fTop:fTop,fLeft:fLeft}}" [cardNo]="10" [pos]="3"></card>
-</div>
