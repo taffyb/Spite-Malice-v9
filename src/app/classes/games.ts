@@ -1,9 +1,8 @@
 import {Card} from './cards';
 import {IMoveModel} from './moves';
-import {PositionsEnum, CardsEnum} from './enums';
-import {IMoveSubscriber} from './move.subscriber';
-import {DealerService} from '../services/dealer.service';
+import {PositionsEnum, CardsEnum,MoveTypesEnum} from './enums';
 
+import {PlayerPositionsEnum} from './enums';
 
 export interface IGameModel {
     uuid: string;
@@ -20,7 +19,7 @@ export class Game implements IGameModel{
     activePlayer:number=0;
 
     cards:Card[];
-    cardPositions:Card[][];
+    private cardPositions:Card[][];
     gameOver:string;
     isDraw:boolean;
 
@@ -30,32 +29,54 @@ export class Game implements IGameModel{
     
     constructor(name:string, player1Uuid: string, player2Uuid: string){
         this.name=name;
+        this.uuid="1234567";
         this.player1Uuid=player1Uuid;
         this.player1Uuid=player1Uuid;
         this.cards=[];
-        this.cardPositions=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+        this.cardPositions=[[],/*PLAYER_1_PILE*/
+                            [],[],[],[],[],/*PLAYER_1_HAND*/
+                            [],[],[],[],/*PLAYER_1_STACK*/
+                            [],/*PLAYER_2_PILE*/
+                            [],[],[],[],[],/*PLAYER_2_HAND*/
+                            [],[],[],[],/*PLAYER_2_STACK*/
+                            [],[],[],[],/*STACK*/
+                            [],/*DECK*/
+                            []];/*RECYCLE*/
         
         this.deck=this.cardPositions[PositionsEnum.DECK];
-        this.recyclePile=this.cardPositions[PositionsEnum.DECK];
+        this.recyclePile=this.cardPositions[PositionsEnum.RECYCLE];
     }  
 
-//    moveToRecyclePile(stack:number,game:Game){
-//      const cards:Card[]=this.cardPositions[stack];
-//      for(let c=0;c<cards.length-1;c++){
-//          game.recyclePile.push(cards[c]);
-//      }
-//    }
+    public getCardPositions():Card[][]{
+            return this.cardPositions;
+    }
       
     performMove(move: IMoveModel) {
-        console.log(`game.perfromMove:${JSON.stringify(move)}`);
+//        console.log(`game.perfromMove:${JSON.stringify(move)}`);
         this.addCard(move.card,move.to);
-        this.removeCard(move.from);
+        if(move.type!=MoveTypesEnum.DEALER){
+            this.removeCard(move.from);
+        }
     }
     
     private addCard(card:number,position:number){
+//        console.log(`game.addCard:${position}`);
         this.cardPositions[position].push(new Card(card,position));
     }
     private removeCard(position:number){
+//        console.log(`game.removeCard:${position}`);
         this.cardPositions[position].pop();
+    }
+    cardsInHand():number{
+        let cardCount:number=0;
+        const HAND_1 = PositionsEnum.PLAYER_HAND_1+(this.activePlayer*PlayerPositionsEnum.PLAYER_2);
+        const STACK_1 = PositionsEnum.PLAYER_STACK_1+(this.activePlayer*PlayerPositionsEnum.PLAYER_2);
+//        console.log(`fillHand\nPlayer: ${player.name} Hand B4: ${JSON.stringify(player.cards)}`);
+        for(let i=HAND_1;i<STACK_1;i++){
+            if(this.cardPositions[i].length>0){
+            cardCount+=1;
+            }
+        }
+        return cardCount;
     }
 }

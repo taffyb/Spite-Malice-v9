@@ -19,4 +19,5 @@ export const Animations = [
          transition('from=>to', animate('{{duration}}ms'),{params:{duration:500}}),
 //         transition('final=>initial', animate('1000ms'))
     ]),
-]
+];
+export const DEFAULT_DURATIONS={PLAYER:800,DEALER:100,RECYCLE:80};

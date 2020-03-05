@@ -24,12 +24,12 @@ export class GameService{
             c=cardNos.pop();
             card= new Card(c,PositionsEnum.PLAYER_PILE);
             game.cards.push(card);
-            game.cardPositions[PositionsEnum.PLAYER_PILE].push(card);
+            game.getCardPositions()[PositionsEnum.PLAYER_PILE].push(card);
             //player 2
             c=cardNos.pop();
             card= new Card(c,PositionsEnum.PLAYER_PILE+10);
             game.cards.push(card);
-            game.cardPositions[PositionsEnum.PLAYER_PILE+10].push(card);
+            game.getCardPositions()[PositionsEnum.PLAYER_PILE+10].push(card);
         }
         //START STACKS
         for(let i:number=0;i<4;i++){
@@ -37,12 +37,12 @@ export class GameService{
             c=cardNos.pop();
             card= new Card(c,PositionsEnum.PLAYER_STACK_1+i);
             game.cards.push(card);
-            game.cardPositions[PositionsEnum.PLAYER_STACK_1+i].push(card);
+            game.getCardPositions()[PositionsEnum.PLAYER_STACK_1+i].push(card);
             //player 2
             c=cardNos.pop();
             card= new Card(c,(PositionsEnum.PLAYER_STACK_1+i)+10);
             game.cards.push(card);
-            game.cardPositions[(PositionsEnum.PLAYER_STACK_1+i)+10].push(card);
+            game.getCardPositions()[(PositionsEnum.PLAYER_STACK_1+i)+10].push(card);
         }
         //DEAL HAND
         for(let i:number=0;i<5;i++){
@@ -50,20 +50,18 @@ export class GameService{
             c=cardNos.pop();
             card= new Card(c,PositionsEnum.PLAYER_HAND_1+i);
             game.cards.push(card);
-            game.cardPositions[PositionsEnum.PLAYER_HAND_1+i].push(card);
-//            game.cardPositions[PositionsEnum.PLAYER_HAND_1+i].push(CardsEnum.BACK);
+            game.getCardPositions()[PositionsEnum.PLAYER_HAND_1+i].push(card);
             //player 2
             c=cardNos.pop();
             card= new Card(c,(PositionsEnum.PLAYER_HAND_1+i)+10);
             game.cards.push(card);
-            game.cardPositions[(PositionsEnum.PLAYER_HAND_1+i)+10].push(card);
+            game.getCardPositions()[(PositionsEnum.PLAYER_HAND_1+i)+10].push(card);
         }
         for(let i:number=0;i<cardNos.length;i++){
             card= new Card(cardNos[i],PositionsEnum.DECK);
             game.cards.push(card);
-            game.cardPositions[PositionsEnum.DECK].push(card);
+            game.getCardPositions()[PositionsEnum.DECK].push(card);
         }
-//        console.log(`DECK: ${JSON.stringify(game.cardPositions[PositionsEnum.DECK])}`);
         return game;
     }
     saveGame(){}

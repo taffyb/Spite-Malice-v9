@@ -1,6 +1,7 @@
 
 import {PositionsEnum, PlayerPositionsEnum, CardsEnum} from './enums';
 import {Game} from './games';
+import {ICardModel} from './cards';
 //import {Move} from './Move';
 //import {AutoMove} from './AutoMove';
 //import {Player} from './Player';
@@ -22,6 +23,25 @@ export class SMUtils{
         }
         return c;
     }
+    static getTopOfStack(cards:ICardModel[]){
+        return this.getFaceNumber(cards, cards.length-1);
+    }
+    static getFaceNumber(cards:ICardModel[],depth:number):number{
+      if(depth==0){
+          if(cards[depth].cardNo==CardsEnum.JOKER){
+              return CardsEnum.ACE;
+          }else{
+              return this.toFaceNumber(cards[depth].cardNo);
+          }          
+      }else{
+          let faceNumber:number=this.toFaceNumber(cards[depth].cardNo);
+          if(faceNumber==CardsEnum.JOKER){
+              return this.getFaceNumber(cards,depth-1)+1;
+          }else{
+              return faceNumber;
+          }
+      }
+  }
     
 //    static difference(game:Game,player:Player,position1:number,position2:number):number{
 //        let card1:number;

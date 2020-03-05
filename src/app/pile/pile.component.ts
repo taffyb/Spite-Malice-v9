@@ -20,7 +20,7 @@ export class PileComponent implements OnInit {
   }
 
   select(selectedCard:SelectedCard){
-      console.log(`Pile-selected Card: ${JSON.stringify(selectedCard)}`);
+//      console.log(`Pile-selected Card: ${JSON.stringify(selectedCard)}`);
       this.onSelect.emit(selectedCard);
   }
 }

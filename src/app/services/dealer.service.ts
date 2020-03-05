@@ -44,30 +44,29 @@ export class DealerService {
    }
   fillHand(activePlayer:number,game:Game):Move[]{
       let c:number=0;
-      let moves:Move[];
+      let moves:Move[]=[];
       
       const HAND_1 = PositionsEnum.PLAYER_HAND_1+(activePlayer*PlayerPositionsEnum.PLAYER_2);
       const STACK_1 = PositionsEnum.PLAYER_STACK_1+(activePlayer*PlayerPositionsEnum.PLAYER_2);
-//      console.log(`fillHand\nPlayer: ${player.name} Hand B4: ${JSON.stringify(player.cards)}`);
+
       for(let i=HAND_1;i<STACK_1;i++){
-          if(game.cardPositions[i].length==0){
+          if(game.getCardPositions()[i].length==0){
               let nextCard:Card = this.dealNextCard(game);
-//              console.log(`add card ${nextCard} to position ${i}`);
+              console.log(`add card ${JSON.stringify(nextCard)} to position ${i}`);
               c++;
               let move = new Move();
+              
               move.type=MoveTypesEnum.DEALER;
               move.from=PositionsEnum.DECK;
               move.card=nextCard.cardNo;
               move.to=i;
-              moves.push(move);
-              game.cardPositions[i].push(nextCard);              
+              moves.push(move);              
           }          
       }
 
       const addMove = new Promise((resolve,reject)=>{
           this.moveSvc.addMoves(game.uuid, moves);
       });
-//      console.log(`fillHand\nPlayer: ${player.name} Added ${c} cards ${JSON.stringify(deal)}`);
       return moves;
   }
   private dealNextCard(game:Game):Card{
@@ -77,22 +76,27 @@ export class DealerService {
           game.isDraw=true;
       }
       if(game.deck.length==0){
-          /* 
-              If the deck has run out of cards, 
-              shuffle the recycle pile and add them back into the deck.
-          */
-          game.deck = game.recyclePile;
-          game.recyclePile=[]; //empty the recycle pile
-          this.shuffle<Card>(game.deck);
+          this.recycle(game);
       }
       if(game.deck.length==0){
           throw Error;
       }
+      
       nextCard= game.deck.pop();
-      while(nextCard.cardNo==CardsEnum.NO_CARD){
-          nextCard=game.deck.pop();
+      if(game.deck.length==0){
+          this.recycle(game);
       }
       return nextCard;
-    }
-
+  }
+  private recycle(game:Game){
+      /* 
+      If the deck has run out of cards, 
+      shuffle the recycle pile and add them back into the deck.
+      */
+      console.log(`*** Recycle Discard pile ***`);
+      for(let i=game.recyclePile.length-1;i>=0;i--){
+          game.deck.push(game.recyclePile.pop());
+      };
+      this.shuffle<Card>(game.deck);
+  }
 }

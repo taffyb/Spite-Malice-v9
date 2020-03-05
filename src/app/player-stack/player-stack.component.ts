@@ -18,7 +18,7 @@ export class PlayerStackComponent implements OnInit {
   ngOnInit() {
   }
   select(selectedCard:SelectedCard){
-      console.log(`Stack-selected Card: ${JSON.stringify(selectedCard)}`);
+//      console.log(`Stack-selected Card: ${JSON.stringify(selectedCard)}`);
       this.onSelect.emit(selectedCard);
   }
 }

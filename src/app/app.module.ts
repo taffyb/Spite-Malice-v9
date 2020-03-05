@@ -8,6 +8,7 @@ import { CardComponent } from './card/card.component';
 import { PileComponent } from './pile/pile.component';
 import { PlayAreaComponent } from './play-area/play-area.component';
 import { PlayerStackComponent } from './player-stack/player-stack.component';
+import { GamePileComponent } from './game-pile/game-pile.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { PlayerStackComponent } from './player-stack/player-stack.component';
     CardComponent,
     PileComponent,
     PlayAreaComponent,
-    PlayerStackComponent
+    PlayerStackComponent,
+    GamePileComponent
   ],
   imports: [
     BrowserModule,
