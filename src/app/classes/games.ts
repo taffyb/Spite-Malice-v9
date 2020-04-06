@@ -31,7 +31,7 @@ export class Game implements IGameModel{
         this.name=name;
         this.uuid="1234567";
         this.player1Uuid=player1Uuid;
-        this.player1Uuid=player1Uuid;
+        this.player2Uuid=player2Uuid;
         this.cards=[];
         this.cardPositions=[[],/*PLAYER_1_PILE*/
                             [],[],[],[],[],/*PLAYER_1_HAND*/

@@ -12,6 +12,7 @@ import {PositionsEnum, PlayerPositionsEnum, CardsEnum, MoveTypesEnum} from '../c
 import {GameService} from '../services/game.service';
 import {MoveService} from '../services/move.service';
 import {DealerService} from '../services/dealer.service';
+import {PlayerService} from '../services/player.service';
 import {Animations,DEFAULT_DURATIONS} from './animation';
 
 @Component({
@@ -26,7 +27,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   pPE=PlayerPositionsEnum;
   cE=CardsEnum;
   mtE=MoveTypesEnum;
-  players=[0,1];
+  players$;
   game:Game;
   from:SelectedCard=new SelectedCard(-1,-1);
   to:SelectedCard=new SelectedCard(-1,-1);
@@ -47,9 +48,10 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   constructor(private gameSvc:GameService, 
           private moveSvc:MoveService, 
           private dealerSvc:DealerService, 
+          private playerSvc:PlayerService, 
           private renderer:Renderer2,
           public zone: NgZone) { 
-      this.game=gameSvc.newGame("12345", "", "");
+      this.game=gameSvc.newGame("12345", "123456", "98765");
       
       this.game.getCardPositions()[this.pE.PLAYER_STACK_2].push(new Card(this.cE.KING,this.pE.PLAYER_STACK_2));
 //      this.game.getCardPositions()[this.pE.PLAYER_STACK_3].push(new Card(this.cE.JOKER,this.pE.PLAYER_STACK_3));
@@ -104,7 +106,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
 
   ngOnInit() {
+      this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
   }
+
 
 //  moveObserver={
 //      next: function(next) {

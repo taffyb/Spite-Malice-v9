@@ -9,4 +9,5 @@ import {Options} from './classes/options';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+    
 }
