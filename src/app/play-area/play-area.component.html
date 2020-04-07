@@ -10,14 +10,15 @@
 								 duration:DURATIONS[mtE[m.type]]}}"
 		(@animateCard.done)="animDone($event)">
 	</card>	
-	
- 	<div *ngIf="players$ | async as players else loading">
- 		<table>
- 			<tr><th colspan=2>{{players[0].name}}</th><th colspan=2>{{players[1].name}}</th></tr>
- 			<tr><th>Turns</th><th>Moves</th><th>Turns</th><th>Moves</th></tr>
- 			<tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
- 		</table>
- 	</div>
+ 	
+	<div *ngIf="players$ | async as players else loading">
+		<table *ngIf="profile.showStatistics && players.length>0">
+			<tr><th colspan=2>{{players[0].name}}</th><th colspan=2>{{players[1].name}}</th></tr>
+			<tr><th>Turns</th><th>Moves</th><th>Turns</th><th>Moves</th></tr>
+			<tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+		</table>
+	  	<ng-template #loading>Loading statistics</ng-template>
+	</div>
 	<div *ngIf="players$ | async as players else loading">
 		<div class="player" *ngFor="let player of players; let pIdx=index">		
 			<div class="container">

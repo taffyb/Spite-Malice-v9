@@ -13,6 +13,7 @@ import {GameService} from '../services/game.service';
 import {MoveService} from '../services/move.service';
 import {DealerService} from '../services/dealer.service';
 import {PlayerService} from '../services/player.service';
+import {ProfileService} from '../services/profile.service';
 import {Animations,DEFAULT_DURATIONS} from './animation';
 
 @Component({
@@ -42,13 +43,15 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   m:Move=new Move();
   animating:boolean=false;
   moves:Move[]=[];
+  @Input()profile;
   
   APO=()=>{return this.game.activePlayer*this.pPE.PLAYER_2}; /*ACTIVE PLAYER OFFSET */
   
   constructor(private gameSvc:GameService, 
           private moveSvc:MoveService, 
           private dealerSvc:DealerService, 
-          private playerSvc:PlayerService, 
+          private playerSvc:PlayerService,  
+          private profileSvc:ProfileService, 
           private renderer:Renderer2,
           public zone: NgZone) { 
       this.game=gameSvc.newGame("12345", "123456", "98765");
@@ -107,6 +110,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
 
   ngOnInit() {
       this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
+    //  this.userProfile$=this.profileSvc.getProfile$(this.game.player1Uuid);
   }
 
 

@@ -4,14 +4,15 @@ export interface IProfileModel{
                           dealerYN:boolean,dealer:number,
                           playerYN:boolean,player:number,
                           opponentYN:boolean,opponent:number}
-              }
+              },
+    showStatistics:boolean
 }
-
-export class defaultProfile implements IProfileModel{
+export const DEFAULT_PROFILE={
     animation: { animateYN: true, 
                  animate: { recycleYN: true, recycle: 0.1,
                              dealerYN: true, dealer: 0.3, 
                              playerYN: true, player: 0.5, 
-                             opponentYN: true; opponent: 0.5 }
-                };
+                             opponentYN: true, opponent: 0.5 }
+                },
+    showStatistics:true
 }

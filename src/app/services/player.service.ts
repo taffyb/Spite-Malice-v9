@@ -19,11 +19,24 @@ export class PlayerService {
                           '123456':{guid:'123456',name:'Taffy'},
                           '98765':{guid:'98765',name:'Suzannah'}
                          };
+  private _player={guid:'123456',name:'Taffy'};
 
   constructor(http:HttpClient) {
       this._http=http;
   }
-  
+  getPlayerByName$(name:string):Observable<IPlayerModel>{
+      let player$:Observable<IPlayerModel>;
+      if(!this._player || this._player.name != name){
+    
+          player$= this._http.get<any>(`${common.endpoint}players?name=${name}`).pipe(
+              tap((player) => console.log(`data.service.getPlayer(): ${player}`)),
+              catchError(common.handleError<any>('getPlayerByName'))
+          );
+      }else{
+          player$=of(this._player);
+      }
+    return player$;
+  }
   getPlayer$(guid:string):Observable<IPlayerModel>{
       if(this._playersByGuid){
           return new Observable<IPlayerModel>((observer) => {

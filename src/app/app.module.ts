@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { MaterialModules } from './material-module';
 import { HttpClientModule } from '@angular/common/http'; 
@@ -12,6 +13,9 @@ import { PlayAreaComponent } from './play-area/play-area.component';
 import { PlayerStackComponent } from './player-stack/player-stack.component';
 import { GamePileComponent } from './game-pile/game-pile.component';
 import { BurgerMenuComponent } from './burger-menu/burger-menu.component';
+import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
+
+import { ModalDialog } from './modal-dialog/modal-dialog';
 
 @NgModule({
   declarations: [
@@ -21,16 +25,20 @@ import { BurgerMenuComponent } from './burger-menu/burger-menu.component';
     PlayAreaComponent,
     PlayerStackComponent,
     GamePileComponent,
-    BurgerMenuComponent
+    BurgerMenuComponent,
+    ProfileDialogComponent,
+    ModalDialog
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MaterialModules
+    MaterialModules,
+    FormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents:[ProfileDialogComponent, ModalDialog]
 })
 export class AppModule { }

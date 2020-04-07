@@ -1,5 +1,7 @@
 <!-- <app-animationdemo></app-animationdemo> -->
 <!-- <app-web-animation></app-web-animation> -->
 <!-- <app-card-animation></app-card-animation>  -->
-<app-burger-menu></app-burger-menu>
-<app-play-area></app-play-area>
+<div *ngIf="profile$ | async as profile">
+	<app-burger-menu [profile]="profile" [player]="player"></app-burger-menu>
+	<app-play-area [profile]="profile"></app-play-area>
+</div>
