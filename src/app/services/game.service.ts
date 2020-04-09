@@ -49,11 +49,13 @@ export class GameService{
             //player 1
             c=cardNos.pop();
             card= new Card(c,PositionsEnum.PLAYER_HAND_1+i);
+//            console.log(`player 1 hand[${PositionsEnum.PLAYER_HAND_1+i}]=${c} ${JSON.stringify(card)}`);
             game.cards.push(card);
             game.getCardPositions()[PositionsEnum.PLAYER_HAND_1+i].push(card);
             //player 2
             c=cardNos.pop();
             card= new Card(c,(PositionsEnum.PLAYER_HAND_1+i)+10);
+//            console.log(`player 2 hand[${(PositionsEnum.PLAYER_HAND_1+i)+10}]=${c} ${JSON.stringify(card)}`);
             game.cards.push(card);
             game.getCardPositions()[(PositionsEnum.PLAYER_HAND_1+i)+10].push(card);
         }

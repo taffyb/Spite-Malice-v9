@@ -52,7 +52,7 @@ export class Game implements IGameModel{
     }
       
     performMove(move: IMoveModel) {
-//        console.log(`game.perfromMove:${JSON.stringify(move)}`);
+        console.log(`game.perfromMove:${JSON.stringify(move)}`);
         this.addCard(move.card,move.to);
         if(move.type!=MoveTypesEnum.DEALER){
             this.removeCard(move.from);

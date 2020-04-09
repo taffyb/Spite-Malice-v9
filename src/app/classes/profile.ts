@@ -9,10 +9,10 @@ export interface IProfileModel{
 }
 export const DEFAULT_PROFILE={
     animation: { animateYN: true, 
-                 animate: { recycleYN: true, recycle: 0.1,
-                             dealerYN: true, dealer: 0.3, 
-                             playerYN: true, player: 0.5, 
-                             opponentYN: true, opponent: 0.5 }
+                 animate: { recycleYN: true, recycle: 1,
+                             dealerYN: true, dealer: 1, 
+                             playerYN: true, player: 1, 
+                             opponentYN: true, opponent: 1 }
                 },
     showStatistics:true
 }

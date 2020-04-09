@@ -7,7 +7,7 @@
 		[@animateCard]="{value:animTrigger,
 						 params:{fTop:fromRect.top,fLeft:fromRect.left,
 								 tTop:toRect.top,tLeft:toRect.left,
-								 duration:DURATIONS[mtE[m.type]]}}"
+								 duration:animationDuration(m)}}"
 		(@animateCard.done)="animDone($event)">
 	</card>	
  	
@@ -41,7 +41,7 @@
 			<div class="container">
 				<div class="heading">Hand</div>
 				<div class="player-hand">
-					<ng-container *ngIf="player==game.activePlayer">
+					<ng-container *ngIf="pIdx==game.activePlayer">
 						<app-pile *ngFor="let i of [0,1,2,3,4]"	
 							id="pos{{pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)}}"
 							[pos]="pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)"
@@ -50,7 +50,7 @@
 							(onSelect)="select($event)">
 						</app-pile>
 					</ng-container>
-					<ng-container *ngIf="player!==game.activePlayer">
+					<ng-container *ngIf="pIdx!==game.activePlayer">
 						<app-pile *ngFor="let i of [0,1,2,3,4]"	
 							id="pos{{pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)}}"
 							[pos]="pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)"			

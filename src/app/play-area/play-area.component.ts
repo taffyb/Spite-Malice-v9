@@ -23,27 +23,24 @@ import {Animations,DEFAULT_DURATIONS} from './animation';
   animations:Animations
 })
 export class PlayAreaComponent implements OnInit, IMoveSubscriber {
-//    @Input()uuid:string=null;
   pE=PositionsEnum;
   pPE=PlayerPositionsEnum;
   cE=CardsEnum;
   mtE=MoveTypesEnum;
   players$;
+  @Input()profile;
   game:Game;
   from:SelectedCard=new SelectedCard(-1,-1);
   to:SelectedCard=new SelectedCard(-1,-1);
+  moves:Move[]=[];
   
   //animation control
   NO_MOVE={top:-1,left:-1};
-//  DURATION=800;//300;
-  DURATIONS=DEFAULT_DURATIONS;
   fromRect=this.NO_MOVE;
   toRect=this.NO_MOVE;
   animTrigger="from";
   m:Move=new Move();
   animating:boolean=false;
-  moves:Move[]=[];
-  @Input()profile;
   
   APO=()=>{return this.game.activePlayer*this.pPE.PLAYER_2}; /*ACTIVE PLAYER OFFSET */
   
@@ -56,55 +53,60 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           public zone: NgZone) { 
       this.game=gameSvc.newGame("12345", "123456", "98765");
       
-      this.game.getCardPositions()[this.pE.PLAYER_STACK_2].push(new Card(this.cE.KING,this.pE.PLAYER_STACK_2));
-//      this.game.getCardPositions()[this.pE.PLAYER_STACK_3].push(new Card(this.cE.JOKER,this.pE.PLAYER_STACK_3));
-//      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.JACK,this.pE.PLAYER_STACK_1));
-//      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.TWO,this.pE.PLAYER_STACK_1));
-//      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.THREE,this.pE.PLAYER_STACK_1));
-//      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.JOKER,this.pE.PLAYER_STACK_1));
-//      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.ACE,this.pE.PLAYER_STACK_1));
-      this.game.getCardPositions()[this.pE.PLAYER_HAND_3+10].pop();
-      
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.ACE,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.TWO,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.THREE,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.FOUR,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.FIVE,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.SIX,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.SEVEN,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.EIGHT,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.NINE,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.TEN,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.JACK,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.QUEEN,this.pE.STACK_1));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.ACE,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.TWO,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.THREE,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.FOUR,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.FIVE,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.SIX,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.SEVEN,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.EIGHT,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.NINE,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.TEN,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.JACK,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.QUEEN,this.pE.STACK_2));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.ACE,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.TWO,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.THREE,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.FOUR,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.FIVE,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.SIX,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.SEVEN,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.EIGHT,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.NINE,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.TEN,this.pE.STACK_3));
-      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.JACK,this.pE.STACK_3));
-      this.game.deck.length=0;
-      this.game.deck.push(new Card(this.cE.QUEEN,this.pE.DECK));
-      this.game.deck.push(new Card(this.cE.ACE,this.pE.DECK));
-      this.game.deck.push(new Card(this.cE.SEVEN,this.pE.DECK));
-      
+//      this.game.getCardPositions()[this.pE.PLAYER_STACK_2].push(new Card(this.cE.KING,this.pE.PLAYER_STACK_2));
+////      this.game.getCardPositions()[this.pE.PLAYER_STACK_3].push(new Card(this.cE.JOKER,this.pE.PLAYER_STACK_3));
+////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.JACK,this.pE.PLAYER_STACK_1));
+////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.TWO,this.pE.PLAYER_STACK_1));
+////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.THREE,this.pE.PLAYER_STACK_1));
+////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.JOKER,this.pE.PLAYER_STACK_1));
+////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.ACE,this.pE.PLAYER_STACK_1));
+//      this.game.getCardPositions()[this.pE.PLAYER_HAND_3+10].pop();
+//      
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.ACE,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.TWO,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.THREE,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.FOUR,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.FIVE,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.SIX,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.SEVEN,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.EIGHT,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.NINE,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.TEN,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.JACK,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.QUEEN,this.pE.STACK_1));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.ACE,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.TWO,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.THREE,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.FOUR,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.FIVE,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.SIX,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.SEVEN,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.EIGHT,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.NINE,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.TEN,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.JACK,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.QUEEN,this.pE.STACK_2));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.ACE,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.TWO,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.THREE,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.FOUR,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.FIVE,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.SIX,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.SEVEN,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.EIGHT,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.NINE,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.TEN,this.pE.STACK_3));
+//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.JACK,this.pE.STACK_3));
+//      this.game.deck.length=0;
+//      this.game.deck.push(new Card(this.cE.QUEEN,this.pE.DECK));
+//      this.game.deck.push(new Card(this.cE.ACE,this.pE.DECK));
+//      this.game.deck.push(new Card(this.cE.SEVEN,this.pE.DECK));
+//      for(let i=0;i<5;i++){
+//          let card = this.game.getCardPositions()[this.pE.PLAYER_HAND_1+i];
+//          console.log(`constructor: player 1 ${JSON.stringify(card)}`);
+////          card = this.game.getCardPositions()[this.pE.PLAYER_HAND_1+i+10];
+////          console.log(`constructor: player 2 ${JSON.stringify(card)}`);
+//      }
       this.moveSvc.subscribe(this);
   }
 
@@ -135,7 +137,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       if(gameUuid == this.game.uuid){      //only act on moves for this game
 //          if(moves.length>0){
               this.moves.push(... moves);
-              this.animateMove();
+              this.nextMove();
 //          }else{
 //              console.log(`No more moves`);
 //          }
@@ -143,29 +145,76 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           console.log(`${gameUuid} != ${this.game.uuid}`);
       }
   }
-  animateMove(){
+  nextMove(){
       let m:Move;
-      if(!this.animating){
-          if(this.moves.length>0){
-              m=this.moves.splice(0,1)[0]; //FIFO
-              this.fromRect=this.pos2ClientRec(m.from);
-              this.toRect=this.pos2ClientRec(m.to);
-              this.m=m;       
-              
-              setTimeout(()=>{ //wrap in time out to allow page to render animation card into position before start to move it.
-//                  console.log(`start animating:${JSON.stringify(m)} state=${this.animTrigger}`);
-                  this.animating=true;
-                  this.animTrigger='to';
-              },1); 
+      if(this.moves.length>0){
+          m = this.moves.splice(0,1)[0]
+    //      console.log(`animateMove:${JSON.stringify(this.profile.animation)}`);
+          if(this.profile.animation.animateYN){
+              let animate:boolean=true;
+              switch(m.type){
+                  case this.mtE.PLAYER:
+                      if(m.from>=this.pE.PLAYER_PILE && m.from<=this.pE.PLAYER_STACK_4){
+                          animate = this.profile.animation.animate.playerYN;
+                      }else{
+                          animate = this.profile.animation.animate.opponentYN;
+                      }
+                      break;
+                  case this.mtE.DEALER:
+                      animate = this.profile.animation.animate.dealerYN;
+                      break;
+                  case this.mtE.RECYCLE:
+                      animate = this.profile.animation.animate.recycleYN;
+                      break;
+              }
+              if(animate){
+                  this.startAnimation(m);
+              }else{
+                  this.performMove(m);
+              }    
+          }else{
+               this.performMove(m);
           }
+      }
+  }
+  animationDuration(m:Move):number{
+      let duration:number = DEFAULT_DURATIONS[this.mtE[m.type]];
+      switch(m.type){
+          case this.mtE.PLAYER:
+              if(m.from>=this.pE.PLAYER_PILE && m.from<=this.pE.PLAYER_STACK_4){
+                  duration = duration*this.profile.animation.animate.player;
+              }else{
+                  duration = duration*this.profile.animation.animate.opponent;
+              }
+              break;
+          case this.mtE.DEALER:
+              duration = duration*this.profile.animation.animate.dealer;
+              break;
+          case this.mtE.RECYCLE:
+              duration = duration*this.profile.animation.animate.recycle;
+              break;
+      }
+      return duration;
+  }
+  startAnimation(m:Move){
+      if(!this.animating){
+          this.fromRect=this.pos2ClientRec(m.from);
+          this.toRect=this.pos2ClientRec(m.to);
+          this.m=m;       
+          
+          setTimeout(()=>{ //wrap in time out to allow page to render animation card into position before start to move it.
+//                  console.log(`start animating:${JSON.stringify(m)} state=${this.animTrigger}`);
+              this.animating=true;
+              this.animTrigger='to';
+          },1); 
       }else{
           setTimeout(()=>{ // If we are already animating then wait for the animation duration  before trying to start a new animation
-              this.animateMove();
-          },this.DURATIONS[this.mtE[this.m.type]]);
+              this.nextMove();
+          },this.animationDuration(this.m));
       }
   }
   animDone(evt){
-//      console.log(`evt: ${JSON.stringify(evt)}`);
+//      console.log(`animateDone.evt: ${JSON.stringify(evt)}`);
       if(evt.fromState=='from'){
 //        console.log(`finish animating: ${JSON.stringify(this.m)}`);
         // move the card
@@ -201,10 +250,38 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
             this.animTrigger='from';
         }
         setTimeout(()=>{
-            this.animateMove();
+            this.nextMove();
         },100);
 //        console.log(`finish animating: ${JSON.stringify(this.m)} animTrigger=${this.animTrigger}`);
       }
+  }
+  performMove(m:Move){
+//      console.log(`performMove:${JSON.stringify(m)}`);
+      this.game.performMove(m);
+      if(m.type==this.mtE.PLAYER){
+          if(m.isDiscard){
+              this.m=new Move();
+              this.game.activePlayer=(this.game.activePlayer==0?1:0);
+              this.dealerSvc.fillHand(this.game.activePlayer, this.game);
+          }else{
+              if(this.game.cardsInHand()==0){
+                  this.m=new Move();
+                  this.dealerSvc.fillHand(this.game.activePlayer, this.game);
+              }else{
+                  let to = m.to;
+                  let c = m.card;
+                  this.m=new Move();
+                  //IF just added a KING to a Game Stack, move to recycle
+                  if(to>=this.pE.STACK_1 && 
+                     to<=this.pE.STACK_4 && 
+                     (SMUtils.getTopOfStack(this.game.getCardPositions()[to])== this.cE.KING)
+                    ){
+                       this.moveSvc.moveToRecycle(this.game,to);
+                  }
+              }            
+          }
+      }
+      this.nextMove();
   }
   select(selectedCard:SelectedCard){
       if(this.from.cardNo==-1){
@@ -235,7 +312,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       let cardAtPosition:Card;
       
       opt.selected=(this.from.position==position);
-      if([this.pE.DECK,this.pE.RECYCLE].includes(position)){opt.showCardFace=false;}
+      if([this.pE.DECK,this.pE.RECYCLE].includes(position)){
+          opt.showCardFace=false;
+      }
 //      *** TESTING ONLY ***
 //      this.from=new Card(this.cE.ACE,this.pE.PLAYER_HAND_1);
   

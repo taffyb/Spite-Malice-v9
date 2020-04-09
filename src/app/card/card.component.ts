@@ -19,7 +19,9 @@ import {SelectedCard} from '../classes/selected-card'
     constructor() {
     }
     ngOnInit(){
-//        console.log(`Card.options: ${JSON.stringify(this.options)}`);
+//        if(this.pos>=1 && this.pos<5){
+//                console.log(`[${this.pos}]Card[${this.cardNo}].options: ${JSON.stringify(this.options)}`);
+//        }
     }
     
     filename():string{

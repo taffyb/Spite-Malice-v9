@@ -10,13 +10,14 @@ import {IProfileModel,DEFAULT_PROFILE} from '../classes/profile';
 })
 export class ProfileDialogComponent implements OnInit {
   _profile:IProfileModel=DEFAULT_PROFILE;
-  profile={};
+  profile:IProfileModel;
   
   constructor(
           public dialogRef: MatDialogRef<ProfileDialogComponent>,
           @Optional() @Inject(MAT_DIALOG_DATA) public data: any) { 
       if(data && data.profile){
           this._profile=data.profile;
+          this.profile=data.profile;
       }
       console.log(`onOpen:${JSON.stringify(data.profile)}`);
 //      dialogRef.disableClose=true;
@@ -27,7 +28,17 @@ export class ProfileDialogComponent implements OnInit {
   onSubmit() {
 
   }
-  
+  disableSlider(slider:string):boolean{
+      let disable:boolean = false;
+      if(!this.profile.animation.animateYN){
+          disable=true;
+      }else{
+          if(!this.profile.animation.animate[slider+'YN']){
+              disable=true;
+          }
+      }
+      return disable;
+  }
   closeDialog(save:boolean){ 
 //      console.log(`${JSON.stringify(this._profile)}`);
       if(save){
