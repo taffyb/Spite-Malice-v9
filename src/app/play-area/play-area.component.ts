@@ -33,6 +33,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   from:SelectedCard=new SelectedCard(-1,-1);
   to:SelectedCard=new SelectedCard(-1,-1);
   moves:Move[]=[];
+  message="";
   
   //animation control
   NO_MOVE={top:-1,left:-1};
@@ -52,67 +53,14 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           private renderer:Renderer2,
           public zone: NgZone) { 
       this.game=gameSvc.newGame("12345", "123456", "98765");
+ 
       
-//      this.game.getCardPositions()[this.pE.PLAYER_STACK_2].push(new Card(this.cE.KING,this.pE.PLAYER_STACK_2));
-////      this.game.getCardPositions()[this.pE.PLAYER_STACK_3].push(new Card(this.cE.JOKER,this.pE.PLAYER_STACK_3));
-////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.JACK,this.pE.PLAYER_STACK_1));
-////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.TWO,this.pE.PLAYER_STACK_1));
-////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.THREE,this.pE.PLAYER_STACK_1));
-////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.JOKER,this.pE.PLAYER_STACK_1));
-////      this.game.getCardPositions()[this.pE.PLAYER_STACK_1].push(new Card(this.cE.ACE,this.pE.PLAYER_STACK_1));
-//      this.game.getCardPositions()[this.pE.PLAYER_HAND_3+10].pop();
-//      
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.ACE,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.TWO,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.THREE,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.FOUR,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.FIVE,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.SIX,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.SEVEN,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.EIGHT,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.NINE,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.TEN,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.JACK,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_1].push(new Card(this.cE.QUEEN,this.pE.STACK_1));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.ACE,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.TWO,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.THREE,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.FOUR,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.FIVE,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.SIX,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.SEVEN,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.EIGHT,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.NINE,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.TEN,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.JACK,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_2].push(new Card(this.cE.QUEEN,this.pE.STACK_2));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.ACE,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.TWO,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.THREE,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.FOUR,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.FIVE,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.SIX,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.SEVEN,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.EIGHT,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.NINE,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.TEN,this.pE.STACK_3));
-//      this.game.getCardPositions()[this.pE.STACK_3].push(new Card(this.cE.JACK,this.pE.STACK_3));
-//      this.game.deck.length=0;
-//      this.game.deck.push(new Card(this.cE.QUEEN,this.pE.DECK));
-//      this.game.deck.push(new Card(this.cE.ACE,this.pE.DECK));
-//      this.game.deck.push(new Card(this.cE.SEVEN,this.pE.DECK));
-//      for(let i=0;i<5;i++){
-//          let card = this.game.getCardPositions()[this.pE.PLAYER_HAND_1+i];
-//          console.log(`constructor: player 1 ${JSON.stringify(card)}`);
-////          card = this.game.getCardPositions()[this.pE.PLAYER_HAND_1+i+10];
-////          console.log(`constructor: player 2 ${JSON.stringify(card)}`);
-//      }
+      this.game.getCardPositions()[this.pE.PLAYER_PILE]=[new Card(this.cE.ACE,this.pE.PLAYER_PILE)];
       this.moveSvc.subscribe(this);
   }
 
   ngOnInit() {
       this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
-    //  this.userProfile$=this.profileSvc.getProfile$(this.game.player1Uuid);
   }
 
 
@@ -130,17 +78,13 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
 //  moves$=this.moveSvc.moves$().subscribe(this.moveObserver);
   
   performMoves(gameUuid: string, moves: IMoveModel[]) {
-//      console.log(`play-area.performMoves: ${JSON.stringify(moves)}`);
       if(!this.animating){
           this.animTrigger='from';
       }
       if(gameUuid == this.game.uuid){      //only act on moves for this game
-//          if(moves.length>0){
-              this.moves.push(... moves);
-              this.nextMove();
-//          }else{
-//              console.log(`No more moves`);
-//          }
+          
+          this.moves.push(... moves);
+          this.nextMove();
       }else{
           console.log(`${gameUuid} != ${this.game.uuid}`);
       }
@@ -149,11 +93,10 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       let m:Move;
       if(this.moves.length>0){
           m = this.moves.splice(0,1)[0]
-    //      console.log(`animateMove:${JSON.stringify(this.profile.animation)}`);
           if(this.profile.animation.animateYN){
               let animate:boolean=true;
               switch(m.type){
-                  case this.mtE.PLAYER:
+                  case this.mtE.PLAYER:                      
                       if(m.from>=this.pE.PLAYER_PILE && m.from<=this.pE.PLAYER_STACK_4){
                           animate = this.profile.animation.animate.playerYN;
                       }else{
@@ -202,8 +145,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           this.toRect=this.pos2ClientRec(m.to);
           this.m=m;       
           
-          setTimeout(()=>{ //wrap in time out to allow page to render animation card into position before start to move it.
-//                  console.log(`start animating:${JSON.stringify(m)} state=${this.animTrigger}`);
+          setTimeout(()=>{ 
+              //wrap in time out to allow page to render animation card into position before start to move it.
               this.animating=true;
               this.animTrigger='to';
           },1); 
@@ -214,9 +157,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
   }
   animDone(evt){
-//      console.log(`animateDone.evt: ${JSON.stringify(evt)}`);
       if(evt.fromState=='from'){
-//        console.log(`finish animating: ${JSON.stringify(this.m)}`);
         // move the card
         this.animating=false;
         this.game.performMove(this.m);
@@ -224,7 +165,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
             if(this.m.isDiscard){
                 this.m=new Move();
                 this.animTrigger='from';
-                this.game.activePlayer=(this.game.activePlayer==0?1:0);
+                this.game.switchPlayer();
                 this.dealerSvc.fillHand(this.game.activePlayer, this.game);
             }else{
                 if(this.game.cardsInHand()==0){
@@ -243,6 +184,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                       ){
                          this.moveSvc.moveToRecycle(this.game,to);
                     }
+                    this.isGameOver();
                 }            
             }
         }else{
@@ -252,11 +194,21 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
         setTimeout(()=>{
             this.nextMove();
         },100);
-//        console.log(`finish animating: ${JSON.stringify(this.m)} animTrigger=${this.animTrigger}`);
       }
   }
+  
+  async isGameOver(){
+      if(!this.game.hasCardsOnPile()){
+          let players  = await this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).toPromise();
+          this.message = `Congratulations${players[this.game.activePlayer].name} is the Winner`;
+      }
+  }
+ /**
+  * Called when not animating
+  * @param m
+  */
   performMove(m:Move){
-//      console.log(`performMove:${JSON.stringify(m)}`);
+      
       this.game.performMove(m);
       if(m.type==this.mtE.PLAYER){
           if(m.isDiscard){
@@ -278,6 +230,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                     ){
                        this.moveSvc.moveToRecycle(this.game,to);
                   }
+                  this.isGameOver();
               }            
           }
       }
@@ -287,7 +240,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       if(this.from.cardNo==-1){
           this.from= selectedCard;
       }else{
-          if(this.from.cardNo==selectedCard.cardNo){
+          if(this.from.position==selectedCard.position){
               this.from = new SelectedCard(-1,-1);
               this.to = new SelectedCard(-1,-1);
           }else{
@@ -298,7 +251,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               move.to=this.to.position;
               move.type = MoveTypesEnum.PLAYER;
               move.isDiscard=this.isDiscard(this.to.position);
-//              console.log(`B4 addMove ${JSON.stringify(move)}`);
               this.moveSvc.addMove(this.game.uuid, move);
               
               //reset selected Positions
@@ -315,12 +267,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       if([this.pE.DECK,this.pE.RECYCLE].includes(position)){
           opt.showCardFace=false;
       }
-//      *** TESTING ONLY ***
-//      this.from=new Card(this.cE.ACE,this.pE.PLAYER_HAND_1);
   
       //if there is no card at this position and it is the centre stack or active player's stack
       if(this.game.getCardPositions()[position].length==0){
-//          console.log(`There is no card at position [${position}]`);
          switch(position){
              case this.pE.PLAYER_PILE+(this.APO()):
                  //Pile can't be empty while game in play
@@ -343,7 +292,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
              case this.pE.STACK_2:
              case this.pE.STACK_3:
              case this.pE.STACK_4:
-//                 console.log(`([${this.cE.ACE},${this.cE.JOKER}].includes(${SMUtils.toFaceNumber(this.from.cardNo)}/${this.from.cardNo}))`);
                  opt.selectableTo= ([this.cE.ACE,this.cE.JOKER].includes(SMUtils.toFaceNumber(this.from.cardNo)));
           }
       }else{
@@ -394,7 +342,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                 SMUtils.toFaceNumber(this.from.cardNo)==this.cE.JOKER);
            }
       }
-//      console.log(`Options for position [${position}]:${JSON.stringify(opt)}`);
       return opt;
   }
   isDiscard(position:number):boolean{
@@ -425,7 +372,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   
   pos2ClientRec(pos:number):{top:number,left:number}{
       let id:string = `#pos${pos}`;
-//      console.log(`querySelector(${id})`);
       const clientRect=document.querySelector( id).getBoundingClientRect();
       return {top:clientRect.top,left:clientRect.left};
   }

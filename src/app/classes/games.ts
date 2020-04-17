@@ -17,6 +17,7 @@ export class Game implements IGameModel{
     player1Uuid: string;
     player2Uuid: string;
     activePlayer:number=0;
+    stats:{players:[{turns:number,moves:number}]}={players:[{turns:0,moves:0},{turns:0,moves:0}]};
 
     cards:Card[];
     private cardPositions:Card[][];
@@ -52,7 +53,12 @@ export class Game implements IGameModel{
     }
       
     performMove(move: IMoveModel) {
-        console.log(`game.perfromMove:${JSON.stringify(move)}`);
+        if(move.type==MoveTypesEnum.PLAYER){
+            let stats=this.stats.players[this.activePlayer];
+            stats.moves+=1;
+//        console.log(`Player Moves: ${stats.moves}`); 
+        }
+        console.log(`game.perfromMove[${MoveTypesEnum[move.type]}]:${JSON.stringify(move)}`);
         this.addCard(move.card,move.to);
         if(move.type!=MoveTypesEnum.DEALER){
             this.removeCard(move.from);
@@ -78,5 +84,17 @@ export class Game implements IGameModel{
             }
         }
         return cardCount;
+    }
+    hasCardsOnPile():boolean{
+        let cardCount:number=0;
+        const PILE = PositionsEnum.PLAYER_PILE+(this.activePlayer*PlayerPositionsEnum.PLAYER_2);
+
+        return this.cardPositions[PILE].length>0;
+    }
+    switchPlayer(){
+        console.log(`game.switchPlayer()`);
+        let stats=this.stats.players[this.activePlayer];
+        stats.turns+=1;
+        this.activePlayer=(this.activePlayer==0?1:0);
     }
 }

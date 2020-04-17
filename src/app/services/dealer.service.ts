@@ -52,7 +52,7 @@ export class DealerService {
       for(let i=HAND_1;i<STACK_1;i++){
           if(game.getCardPositions()[i].length==0){
               let nextCard:Card = this.dealNextCard(game);
-              console.log(`add card ${JSON.stringify(nextCard)} to position ${i}`);
+//              console.log(`add card ${JSON.stringify(nextCard)} to position ${i}`);
               c++;
               let move = new Move();
               
