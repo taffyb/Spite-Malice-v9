@@ -57,3 +57,9 @@ export enum MoveTypesEnum{
     RECYCLE,
     PLAYER_SWITCH
 }
+export enum GameStatesEnum{
+    PLAYING=0,
+    PAUSED,
+    DRAW,
+    OVER
+}

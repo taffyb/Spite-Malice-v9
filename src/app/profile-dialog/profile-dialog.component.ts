@@ -20,7 +20,6 @@ export class ProfileDialogComponent implements OnInit {
           this.profile=data.profile;
       }
       console.log(`onOpen:${JSON.stringify(data.profile)}`);
-//      dialogRef.disableClose=true;
   }
 
   ngOnInit() {
@@ -40,7 +39,6 @@ export class ProfileDialogComponent implements OnInit {
       return disable;
   }
   closeDialog(save:boolean){ 
-//      console.log(`${JSON.stringify(this._profile)}`);
       if(save){
           this.dialogRef.close({event:'close',data:this.profile});
       }else{

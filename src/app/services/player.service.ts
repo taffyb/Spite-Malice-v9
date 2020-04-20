@@ -10,8 +10,6 @@ import {IPlayerModel} from '../classes/players';
   providedIn: 'root'
 })
 export class PlayerService {
-  private _http:HttpClient;
-
   private _players:IPlayerModel[]= [{guid:'123456',name:'Taffy'},
                                     {guid:'98765',name:'Suzannah'},
                                     {guid:'111111',name:'Player'}];
@@ -21,14 +19,13 @@ export class PlayerService {
                          };
   private _player={guid:'123456',name:'Taffy'};
 
-  constructor(http:HttpClient) {
-      this._http=http;
+  constructor(private http:HttpClient) {
   }
   getPlayerByName$(name:string):Observable<IPlayerModel>{
       let player$:Observable<IPlayerModel>;
       if(!this._player || this._player.name != name){
     
-          player$= this._http.get<any>(`${common.endpoint}players?name=${name}`).pipe(
+          player$= this.http.get<any>(`${common.endpoint}players?name=${name}`).pipe(
               tap((player) => console.log(`data.service.getPlayer(): ${player}`)),
               catchError(common.handleError<any>('getPlayerByName'))
           );
@@ -41,7 +38,7 @@ export class PlayerService {
       if(this._playersByGuid){
           return new Observable<IPlayerModel>((observer) => {
               if(!this._playersByGuid[guid]){
-                  this._http.get<IPlayerModel>(`${common.endpoint}players/${guid}`).subscribe(p=>{
+                  this.http.get<IPlayerModel>(`${common.endpoint}players/${guid}`).subscribe(p=>{
                       this._playersByGuid[guid]=p;
                       observer.next(this._playersByGuid[guid]);
                       observer.complete();

@@ -1,12 +1,8 @@
 import {Injectable} from '@angular/core';
-//import {Player} from '../classes/Player';
 import {Game} from '../classes/games';
-//import {Turn} from '../classes/Turn';
-//import {Deal} from '../classes/Deal';
 import {IMoveModel, Move} from '../classes/moves';
-import {Card} from '../classes/cards';
+import {ICardModel, Card} from '../classes/cards';
 import {PositionsEnum, CardsEnum, PlayerPositionsEnum, MoveTypesEnum} from '../classes/enums';
-import {ICardModel} from '../classes/cards';
 
 import {MoveService} from '../services/move.service';
 
@@ -17,7 +13,7 @@ export class DealerService {
 
   constructor(private moveSvc:MoveService) {}
   
-  getCardNos():number[]{
+  getDeck():number[]{
       const decks:number=2; //default play with two decks
       const jokers:number=4;
       const deck:number[]=[];
@@ -34,7 +30,7 @@ export class DealerService {
       this.shuffle<number>(deck);
       return deck;
   }
-  shuffle<T>(deck:T[]) { 
+  private shuffle<T>(deck:T[]) { 
       for (let i:number = deck.length - 1; i > 0; i--) {
           let j:number = Math.floor(Math.random() * (i + 1));
           let temp:T = deck[i];
@@ -50,9 +46,8 @@ export class DealerService {
       const STACK_1 = PositionsEnum.PLAYER_STACK_1+(activePlayer*PlayerPositionsEnum.PLAYER_2);
 
       for(let i=HAND_1;i<STACK_1;i++){
-          if(game.getCardPositions()[i].length==0){
+      if(game.getCards(i).length==0){
               let nextCard:Card = this.dealNextCard(game);
-//              console.log(`add card ${JSON.stringify(nextCard)} to position ${i}`);
               c++;
               let move = new Move();
               

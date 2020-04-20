@@ -23,10 +23,10 @@ export class SMUtils{
         }
         return c;
     }
-    static getTopOfStack(cards:ICardModel[]){
+    static getTopOfStack(cards:ICardModel[]):number{
         return this.getFaceNumber(cards, cards.length-1);
     }
-    static getFaceNumber(cards:ICardModel[],depth:number):number{
+    static getFaceNumber(cards:ICardModel[],depth:number=0):number{
       if(depth==0){
           if(cards[depth].cardNo==CardsEnum.JOKER){
               return CardsEnum.ACE;

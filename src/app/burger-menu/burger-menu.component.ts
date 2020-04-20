@@ -1,5 +1,6 @@
 import { Component, OnInit,Input,Output, EventEmitter } from '@angular/core';
 import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
+import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
 import { MatDialog } from '@angular/material';
 import {IProfileModel,DEFAULT_PROFILE} from '../classes/profile';
 import {IPlayerModel} from '../classes/players';
@@ -36,5 +37,13 @@ export class BurgerMenuComponent implements OnInit {
               this.profileSvc.saveProfile(this.player.guid,this.profile);
           }
       });
+  }
+  onHelp(){
+      console.log(`Help clicked`);
+      
+      const dialogRef = this.dialog.open(HelpDialogComponent, {
+          backdropClass:'custom-dialog-backdrop-class',
+          panelClass:'custom-dialog-panel-class'
+        });
   }
 }

@@ -13,7 +13,6 @@
 	
 	<div id="game-over" *ngIf="message.length>0"  style="white-space: pre-line;">
 		<h2>{{message}}</h2>
-		<img src="./assets/fireworks.webp"  height="350" width="500">
 		<table *ngIf="players$ | async as players">
 			<tr><th colspan=2>{{players[0].name}}</th><th colspan=2>{{players[1].name}}</th></tr>
 			<tr><th>Turns</th><th>Moves</th><th>Turns</th><th>Moves</th></tr>
@@ -24,6 +23,7 @@
 				<td>{{game.stats.players[1].moves}}</td>
 			</tr>
 		</table>
+		<img src="./assets/fireworks.webp"  height="350" width="500">
 	</div>
 	<div *ngIf="message.length==0">	
  	
@@ -49,11 +49,11 @@
 				<div class="container">
 					<div class="heading">Pile</div>
 					<div class="player-pile tooltip" >
-					    <span class="tooltiptext">{{game.getCardPositions()[pE.PLAYER_PILE+(pPE.PLAYER_2*pIdx)].length}}</span>
+					    <span class="tooltiptext">{{game.getCards(pE.PLAYER_PILE+(pPE.PLAYER_2*pIdx)).length}}</span>
 						<app-pile 
 							id="pos{{pE.PLAYER_PILE+(pPE.PLAYER_2*pIdx)}}"
 							[pos]="pE.PLAYER_PILE+(pPE.PLAYER_2*pIdx)"
-							[cards]="game.getCardPositions()[pE.PLAYER_PILE+(pPE.PLAYER_2*pIdx)]"
+							[cards]="game.getCards(pE.PLAYER_PILE+(pPE.PLAYER_2*pIdx))"
 							[options]="getOptions(pE.PLAYER_PILE+(pPE.PLAYER_2*pIdx))"
 							(onSelect)="select($event)">
 						</app-pile>
@@ -66,7 +66,7 @@
 							<app-pile *ngFor="let i of [0,1,2,3,4]"	
 								id="pos{{pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)}}"
 								[pos]="pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)"
-								[cards]="game.getCardPositions()[pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)]"
+								[cards]="game.getCards(pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx))"
 								[options]="getOptions(pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx))"
 								(onSelect)="select($event)">
 							</app-pile>
@@ -75,7 +75,7 @@
 							<app-pile *ngFor="let i of [0,1,2,3,4]"	
 								id="pos{{pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)}}"
 								[pos]="pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)"			
-								[cards]="[{cardNo:(game.getCardPositions()[pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)].length>0?cE.BACK:0),
+								[cards]="[{cardNo:(game.getCards(pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)).length>0?cE.BACK:0),
 										   position:i+30}]"
 								[options]="getOptions(pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx))"
 								(onSelect)="select($event)">
@@ -88,7 +88,7 @@
 					<div class="player-stacks">
 						<app-player-stack *ngFor="let i of [0,1,2,3]"
 							[pos]="pE.PLAYER_STACK_1+i+(pPE.PLAYER_2*pIdx)" 
-							[cards]="game.getCardPositions()[pE.PLAYER_STACK_1+i+(pPE.PLAYER_2*pIdx)]" 
+							[cards]="game.getCards(pE.PLAYER_STACK_1+i+(pPE.PLAYER_2*pIdx))" 
 							[options]="getOptions(pE.PLAYER_STACK_1+i+(pPE.PLAYER_2*pIdx))"
 							(onSelect)="select($event)">
 						</app-player-stack>
@@ -97,20 +97,21 @@
 			</div>
 			<div class="game-row">
 				<div class="game-deck tooltip" >
-					<span class="tooltiptext">{{game.getCardPositions()[pE.DECK].length}}</span>
+					<span class="tooltiptext">{{game.getCards(pE.DECK).length}}</span>
 					<app-pile 			
 						id="pos{{pE.DECK}}"	
 						[pos]="pE.DECK"
-						[cards]="game.getCardPositions()[pE.DECK]"
+						[cards]="game.getCards(pE.DECK)"
 						[options]="getOptions(pE.DECK)">
 					</app-pile>
 				</div>		
 				<div class="game-recycle tooltip" >
-					<span *ngIf="game.getCardPositions()[pE.RECYCLE].length>0" class="tooltiptext">{{game.getCardPositions()[pE.RECYCLE].length}}</span>
+					<span *ngIf="game.getCards(pE.RECYCLE).length>0" 
+						class="tooltiptext">{{game.getCards(pE.RECYCLE).length}}</span>
 					<app-pile 				
 						id="pos{{pE.RECYCLE}}"			
 						[pos]="pE.RECYCLE"
-						[cards]="game.getCardPositions()[pE.RECYCLE]"
+						[cards]="game.getCards(pE.RECYCLE)"
 						[options]="getOptions(pE.RECYCLE)">
 					</app-pile>			 
 				</div>
@@ -118,7 +119,7 @@
 					<app-game-pile *ngFor="let i of [0,1,2,3]"
 						id="pos{{pE.STACK_1+i}}"			
 						[pos]="pE.STACK_1+i"
-						[cards]="game.getCardPositions()[pE.STACK_1+i]"
+						[cards]="game.getCards(pE.STACK_1+i)"
 						[options]="getOptions(pE.STACK_1+i)"
 						(onSelect)="select($event)">
 					</app-game-pile>

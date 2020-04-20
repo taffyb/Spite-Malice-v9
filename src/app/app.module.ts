@@ -16,6 +16,7 @@ import { BurgerMenuComponent } from './burger-menu/burger-menu.component';
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 
 import { ModalDialog } from './modal-dialog/modal-dialog';
+import { HelpDialogComponent } from './help-dialog/help-dialog.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ModalDialog } from './modal-dialog/modal-dialog';
     GamePileComponent,
     BurgerMenuComponent,
     ProfileDialogComponent,
-    ModalDialog
+    ModalDialog,
+    HelpDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -39,6 +41,6 @@ import { ModalDialog } from './modal-dialog/modal-dialog';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents:[ProfileDialogComponent, ModalDialog]
+  entryComponents:[HelpDialogComponent,ProfileDialogComponent, ModalDialog]
 })
 export class AppModule { }

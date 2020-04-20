@@ -9,8 +9,8 @@ import {Injectable} from '@angular/core';
   providedIn: 'root',
 })
 export class MoveService{
-    moves:IMoveModel[][]=[]; //key by game UUID so can hold the moves for multiple games at same time.
-    moveSubscribers:IMoveSubscriber[]=[];
+   private _moves:IMoveModel[][]=[]; //key by game UUID so can hold the moves for multiple games at same time.
+   private _moveSubscribers:IMoveSubscriber[]=[];
 //    moveEmitter;
     constructor(){
         
@@ -21,10 +21,10 @@ export class MoveService{
 //    }
     subscribe(subscriber:IMoveSubscriber){
         //Potential for a subscriber to be added more than once!
-        this.moveSubscribers.push(subscriber); 
+        this._moveSubscribers.push(subscriber); 
     }
     publishMoves(gameUuid:string,ms:IMoveModel[]){
-        this.moveSubscribers.forEach(s=>{
+        this._moveSubscribers.forEach(s=>{
 //            this.moveEmitter.next(ms);
 //            console.log(`Publishing [${ms.length}] to Subscriber[${s.constructor.name}] for Game [${gameUuid}]`);
             new Promise((resolve,reject)=>{
@@ -35,20 +35,18 @@ export class MoveService{
     }
     
     addMove(gameUuid:string,m:IMoveModel){
-//        console.log(`MoveService.addMove:${JSON.stringify(m)}`);
         let moves:IMoveModel[]=[];
         moves.push(m);
         this.addMoves(gameUuid,moves);
     }
     addMoves(gameUuid:string,ms:IMoveModel[]){
 
-//        console.log(`MoveService.addMoves:${JSON.stringify(ms)}`);
         let moves:IMoveModel[];
-        if(!this.moves[gameUuid]){
+        if(!this._moves[gameUuid]){
             moves=[];
-            this.moves[gameUuid]=moves;
+            this._moves[gameUuid]=moves;
         }else{
-            moves=this.moves[gameUuid];
+            moves=this._moves[gameUuid];
         }
         ms.forEach(m=>{
             moves.push(m);
@@ -60,10 +58,11 @@ export class MoveService{
     saveMoves(gameUuid:string,ms:IMoveModel[]){
         throw new Error("Method not implemented.");
     }
+    
     moveToRecycle(game:Game,position:number){
-        const moves:Move[]=[];
-        for(let i=game.getCardPositions()[position].length-1;i>=0;i--){
-            let c=game.getCardPositions()[position][i];
+        const moves:IMoveModel[]=[];
+        for(let i=game.getCards(position).length-1;i>=0;i--){
+            let c=game.getCards(position)[i];
             let m = new Move();
             m.card=c.cardNo;
             m.from=position;

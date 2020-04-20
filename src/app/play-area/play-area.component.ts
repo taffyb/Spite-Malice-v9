@@ -32,7 +32,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   game:Game;
   from:SelectedCard=new SelectedCard(-1,-1);
   to:SelectedCard=new SelectedCard(-1,-1);
-  moves:Move[]=[];
+  moves:IMoveModel[]=[];
   message="";
   
   //animation control
@@ -40,7 +40,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   fromRect=this.NO_MOVE;
   toRect=this.NO_MOVE;
   animTrigger="from";
-  m:Move=new Move();
+  m:IMoveModel=new Move();
   animating:boolean=false;
   
   APO=()=>{return this.game.activePlayer*this.pPE.PLAYER_2}; /*ACTIVE PLAYER OFFSET */
@@ -55,7 +55,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       this.game=gameSvc.newGame("12345", "123456", "98765");
  
       
-      this.game.getCardPositions()[this.pE.PLAYER_PILE]=[new Card(this.cE.ACE,this.pE.PLAYER_PILE)];
+//      this.game.getCardPositions()[this.pE.PLAYER_PILE]=[new Card(this.cE.ACE,this.pE.PLAYER_PILE)];
       this.moveSvc.subscribe(this);
   }
 
@@ -90,7 +90,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
   }
   nextMove(){
-      let m:Move;
+      let m:IMoveModel;
       if(this.moves.length>0){
           m = this.moves.splice(0,1)[0]
           if(this.profile.animation.animateYN){
@@ -120,7 +120,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           }
       }
   }
-  animationDuration(m:Move):number{
+  animationDuration(m:IMoveModel):number{
       let duration:number = DEFAULT_DURATIONS[this.mtE[m.type]];
       switch(m.type){
           case this.mtE.PLAYER:
@@ -139,7 +139,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
       return duration;
   }
-  startAnimation(m:Move){
+  startAnimation(m:IMoveModel){
       if(!this.animating){
           this.fromRect=this.pos2ClientRec(m.from);
           this.toRect=this.pos2ClientRec(m.to);
@@ -180,7 +180,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                     //IF just added a KING to a Game Stack, move to recycle
                     if(to>=this.pE.STACK_1 && 
                        to<=this.pE.STACK_4 && 
-                       (SMUtils.getTopOfStack(this.game.getCardPositions()[to])== this.cE.KING)
+//                       (SMUtils.getTopOfStack(this.game.getCardPositions()[to])== this.cE.KING)
+                       (SMUtils.getTopOfStack(this.game.getCards(to))== this.cE.KING)
                       ){
                          this.moveSvc.moveToRecycle(this.game,to);
                     }
@@ -200,14 +201,14 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   async isGameOver(){
       if(!this.game.hasCardsOnPile()){
           let players  = await this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).toPromise();
-          this.message = `Congratulations${players[this.game.activePlayer].name} is the Winner`;
+          this.message = `Congratulations ${players[this.game.activePlayer].name} is the Winner`;
       }
   }
  /**
   * Called when not animating
   * @param m
   */
-  performMove(m:Move){
+  performMove(m:IMoveModel){
       
       this.game.performMove(m);
       if(m.type==this.mtE.PLAYER){
@@ -226,7 +227,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                   //IF just added a KING to a Game Stack, move to recycle
                   if(to>=this.pE.STACK_1 && 
                      to<=this.pE.STACK_4 && 
-                     (SMUtils.getTopOfStack(this.game.getCardPositions()[to])== this.cE.KING)
+//                     (SMUtils.getTopOfStack(this.game.getCardPositions()[to])== this.cE.KING)
+                     (SMUtils.getTopOfStack(this.game.getCards(to))== this.cE.KING)
                     ){
                        this.moveSvc.moveToRecycle(this.game,to);
                   }
@@ -269,7 +271,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
   
       //if there is no card at this position and it is the centre stack or active player's stack
-      if(this.game.getCardPositions()[position].length==0){
+//      if(this.game.getCardPositions()[position].length==0){
+      if(this.game.getCards(position).length==0){
          switch(position){
              case this.pE.PLAYER_PILE+(this.APO()):
                  //Pile can't be empty while game in play
@@ -295,7 +298,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                  opt.selectableTo= ([this.cE.ACE,this.cE.JOKER].includes(SMUtils.toFaceNumber(this.from.cardNo)));
           }
       }else{
-          cardAtPosition=this.game.getCardPositions()[position][this.game.getCardPositions()[position].length-1];
+//          cardAtPosition=this.game.getCardPositions()[position][this.game.getCardPositions()[position].length-1];
+          cardAtPosition=this.game.getCards(position)[this.game.getCards(position).length-1];
           
           switch(position){
               case this.pE.PLAYER_PILE+(this.APO()):
@@ -336,7 +340,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               case this.pE.STACK_2:
               case this.pE.STACK_3:
               case this.pE.STACK_4:
-                  let topOfPile=SMUtils.getFaceNumber(this.game.getCardPositions()[position],this.game.getCardPositions()[position].length-1);
+//                  let topOfPile=SMUtils.getFaceNumber(this.game.getCardPositions()[position],this.game.getCardPositions()[position].length-1);
+                let topOfPile=SMUtils.getFaceNumber(this.game.getCards(position),this.game.getCards(position).length-1);
 
                 opt.selectableTo= (topOfPile==(SMUtils.toFaceNumber(this.from.cardNo)-1) ||
                 SMUtils.toFaceNumber(this.from.cardNo)==this.cE.JOKER);
@@ -346,7 +351,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
   isDiscard(position:number):boolean{
       if(position >= this.pE.PLAYER_STACK_1+(this.APO()) && position <=this.pE.PLAYER_STACK_4+(this.APO())){
-          return (this.game.getCardPositions()[position].length>=1);
+//          return (this.game.getCardPositions()[position].length>=1);
+          return (this.game.getCards(position).length>=1);
       }else{
           return false;
       }
@@ -364,7 +370,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           };
       for(let i=0;i<4;i++){
           //check that each active player stack has at least 1 card 
-          canDiscard= this.game.getCardPositions()[this.pE.PLAYER_STACK_1+i+(this.pPE.PLAYER_2*this.game.activePlayer)].length>0
+//          canDiscard= this.game.getCardPositions()[this.pE.PLAYER_STACK_1+i+(this.pPE.PLAYER_2*this.game.activePlayer)].length>0;
+      canDiscard= this.game.getCards(this.pE.PLAYER_STACK_1+i+(this.pPE.PLAYER_2*this.game.activePlayer)).length>0;
           if(!canDiscard){break;}
       }
       return canDiscard && !stackSelected();
