@@ -11,22 +11,18 @@ import {Injectable} from '@angular/core';
 export class MoveService{
    private _moves:IMoveModel[][]=[]; //key by game UUID so can hold the moves for multiple games at same time.
    private _moveSubscribers:IMoveSubscriber[]=[];
-//    moveEmitter;
+
     constructor(){
         
     }
-//    moves$():Observable<IMoveModel[]>{
-//        const o = Observable.create(e => this.moveEmitter = e);
-//        return o;
-//    }
+
     subscribe(subscriber:IMoveSubscriber){
         //Potential for a subscriber to be added more than once!
         this._moveSubscribers.push(subscriber); 
     }
     publishMoves(gameUuid:string,ms:IMoveModel[]){
+//        console.log(`MoveSvc.publishMoves: this.game.uuid ${gameUuid}`);
         this._moveSubscribers.forEach(s=>{
-//            this.moveEmitter.next(ms);
-//            console.log(`Publishing [${ms.length}] to Subscriber[${s.constructor.name}] for Game [${gameUuid}]`);
             new Promise((resolve,reject)=>{
                 s.performMoves(gameUuid,ms);
                 resolve(true);
@@ -35,11 +31,13 @@ export class MoveService{
     }
     
     addMove(gameUuid:string,m:IMoveModel){
+//        console.log(`MoveSvc.addMove: `);
         let moves:IMoveModel[]=[];
         moves.push(m);
         this.addMoves(gameUuid,moves);
     }
     addMoves(gameUuid:string,ms:IMoveModel[]){
+//        console.log(`MoveSvc.addMoves: `);
 
         let moves:IMoveModel[];
         if(!this._moves[gameUuid]){

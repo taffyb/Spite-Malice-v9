@@ -21,7 +21,7 @@ export class BurgerMenuComponent implements OnInit {
   }
 
   onSettings(){
-      console.log(`Settings clicked`);
+      console.log(`Settings clicked profile:${JSON.stringify(this.profile)}`);
       
       const dialogRef = this.dialog.open(ProfileDialogComponent, {
           backdropClass:'custom-dialog-backdrop-class',

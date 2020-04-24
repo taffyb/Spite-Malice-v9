@@ -1,4 +1,5 @@
-import { Component, OnInit, Input,ViewChild, ElementRef, Renderer2, NgZone } from '@angular/core';
+import { Component, OnInit, Input,ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import {ActivatedRoute, Router } from '@angular/router';
 
 import {Options} from '../classes/options';
 import {SMUtils} from '../classes/sm.utils';
@@ -7,7 +8,7 @@ import {SelectedCard} from '../classes/selected-card';
 import {IMoveModel,Move} from '../classes/moves';
 import {ICardModel, Card} from '../classes/cards';
 import {IMoveSubscriber} from '../classes/move.subscriber';
-import {PositionsEnum, PlayerPositionsEnum, CardsEnum, MoveTypesEnum} from '../classes/enums';
+import {PositionsEnum, PlayerPositionsEnum, CardsEnum, MoveTypesEnum, GameStatesEnum} from '../classes/enums';
 
 import {GameService} from '../services/game.service';
 import {MoveService} from '../services/move.service';
@@ -28,8 +29,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   cE=CardsEnum;
   mtE=MoveTypesEnum;
   players$;
-  @Input()profile;
-  game:Game;
+  profile;
+  @Input()game:Game;
   from:SelectedCard=new SelectedCard(-1,-1);
   to:SelectedCard=new SelectedCard(-1,-1);
   moves:IMoveModel[]=[];
@@ -45,22 +46,53 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   
   APO=()=>{return this.game.activePlayer*this.pPE.PLAYER_2}; /*ACTIVE PLAYER OFFSET */
   
-  constructor(private gameSvc:GameService, 
+  constructor(
+          private router: Router,
+          private route: ActivatedRoute,
+          private gameSvc:GameService, 
           private moveSvc:MoveService, 
           private dealerSvc:DealerService, 
           private playerSvc:PlayerService,  
           private profileSvc:ProfileService, 
-          private renderer:Renderer2,
-          public zone: NgZone) { 
-      this.game=gameSvc.newGame("12345", "123456", "98765");
- 
-      
-//      this.game.getCardPositions()[this.pE.PLAYER_PILE]=[new Card(this.cE.ACE,this.pE.PLAYER_PILE)];
+          private renderer:Renderer2) { 
+      console.log(`PlayAreaComponent: constructor`);
+      route.params.subscribe((val) => {
+          const gameUuid = val.gameUuid;
+          if(gameUuid){
+              try{
+                  this.game = gameSvc.getGame(gameUuid); 
+                  
+                  this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
+                  this.profile = this.profileSvc.getActiveProfile();
+                  this.game.onStateChange$().subscribe({
+                      next:async (next)=>{
+                          switch(next){
+                          case GameStatesEnum.GAME_OVER:
+                              let players  = await this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).toPromise();
+                              this.message = `Congratulations ${players[this.game.activePlayer].name} you are the Winner.`;
+                              break;
+                          case GameStatesEnum.DRAW:
+                              this.message = `There are no cards left. We have to call this a draw.`;
+                              break;
+                          }},
+                      error:(err)=>{},
+                      complete:()=>{}
+                  });
+                  this.game.getCards(this.pE.PLAYER_HAND_1).splice(0,this.game.getCards(this.pE.PLAYER_HAND_1).length);
+                  this.game.getCards(this.pE.PLAYER_HAND_1).push(new Card(this.cE.ACE,this.pE.PLAYER_HAND_1));
+//                  this.game.getCards(this.pE.PLAYER_HAND_1+10).splice(0,this.game.getCards(this.pE.PLAYER_HAND_1).length);
+//                  this.game.getCards(this.pE.DECK).splice(1,this.game.getCards(this.pE.DECK).length);
+              }catch(err){
+                  this.router.navigate(['/']);
+              }
+            
+          }
+      });
       this.moveSvc.subscribe(this);
   }
 
   ngOnInit() {
-      this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
+      console.log(`PlayAreaComponent: ngOnInit`);
   }
 
 
@@ -81,15 +113,14 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       if(!this.animating){
           this.animTrigger='from';
       }
-      if(gameUuid == this.game.uuid){      //only act on moves for this game
+      if(this.game && gameUuid == this.game.uuid){      //only act on moves for this game
           
           this.moves.push(... moves);
           this.nextMove();
-      }else{
-          console.log(`${gameUuid} != ${this.game.uuid}`);
       }
   }
   nextMove(){
+//      console.log(`nextMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
       let m:IMoveModel;
       if(this.moves.length>0){
           m = this.moves.splice(0,1)[0]
@@ -140,6 +171,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       return duration;
   }
   startAnimation(m:IMoveModel){
+//      console.log(`startAnimation: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
       if(!this.animating){
           this.fromRect=this.pos2ClientRec(m.from);
           this.toRect=this.pos2ClientRec(m.to);
@@ -160,7 +192,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       if(evt.fromState=='from'){
         // move the card
         this.animating=false;
+//        console.log(`animDone.before performMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
         this.game.performMove(this.m);
+//        console.log(`animDone.after performMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
         if(this.m.type==this.mtE.PLAYER){
             if(this.m.isDiscard){
                 this.m=new Move();
@@ -180,12 +214,10 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                     //IF just added a KING to a Game Stack, move to recycle
                     if(to>=this.pE.STACK_1 && 
                        to<=this.pE.STACK_4 && 
-//                       (SMUtils.getTopOfStack(this.game.getCardPositions()[to])== this.cE.KING)
                        (SMUtils.getTopOfStack(this.game.getCards(to))== this.cE.KING)
                       ){
                          this.moveSvc.moveToRecycle(this.game,to);
                     }
-                    this.isGameOver();
                 }            
             }
         }else{
@@ -197,19 +229,13 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
         },100);
       }
   }
-  
-  async isGameOver(){
-      if(!this.game.hasCardsOnPile()){
-          let players  = await this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).toPromise();
-          this.message = `Congratulations ${players[this.game.activePlayer].name} is the Winner`;
-      }
-  }
+ 
  /**
   * Called when not animating
   * @param m
   */
   performMove(m:IMoveModel){
-      
+//      console.log(`performMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
       this.game.performMove(m);
       if(m.type==this.mtE.PLAYER){
           if(m.isDiscard){
@@ -227,12 +253,10 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                   //IF just added a KING to a Game Stack, move to recycle
                   if(to>=this.pE.STACK_1 && 
                      to<=this.pE.STACK_4 && 
-//                     (SMUtils.getTopOfStack(this.game.getCardPositions()[to])== this.cE.KING)
                      (SMUtils.getTopOfStack(this.game.getCards(to))== this.cE.KING)
                     ){
                        this.moveSvc.moveToRecycle(this.game,to);
                   }
-                  this.isGameOver();
               }            
           }
       }
@@ -271,7 +295,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
   
       //if there is no card at this position and it is the centre stack or active player's stack
-//      if(this.game.getCardPositions()[position].length==0){
       if(this.game.getCards(position).length==0){
          switch(position){
              case this.pE.PLAYER_PILE+(this.APO()):
@@ -298,7 +321,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                  opt.selectableTo= ([this.cE.ACE,this.cE.JOKER].includes(SMUtils.toFaceNumber(this.from.cardNo)));
           }
       }else{
-//          cardAtPosition=this.game.getCardPositions()[position][this.game.getCardPositions()[position].length-1];
           cardAtPosition=this.game.getCards(position)[this.game.getCards(position).length-1];
           
           switch(position){
@@ -340,7 +362,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               case this.pE.STACK_2:
               case this.pE.STACK_3:
               case this.pE.STACK_4:
-//                  let topOfPile=SMUtils.getFaceNumber(this.game.getCardPositions()[position],this.game.getCardPositions()[position].length-1);
                 let topOfPile=SMUtils.getFaceNumber(this.game.getCards(position),this.game.getCards(position).length-1);
 
                 opt.selectableTo= (topOfPile==(SMUtils.toFaceNumber(this.from.cardNo)-1) ||
@@ -351,7 +372,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
   isDiscard(position:number):boolean{
       if(position >= this.pE.PLAYER_STACK_1+(this.APO()) && position <=this.pE.PLAYER_STACK_4+(this.APO())){
-//          return (this.game.getCardPositions()[position].length>=1);
           return (this.game.getCards(position).length>=1);
       }else{
           return false;
@@ -370,7 +390,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           };
       for(let i=0;i<4;i++){
           //check that each active player stack has at least 1 card 
-//          canDiscard= this.game.getCardPositions()[this.pE.PLAYER_STACK_1+i+(this.pPE.PLAYER_2*this.game.activePlayer)].length>0;
       canDiscard= this.game.getCards(this.pE.PLAYER_STACK_1+i+(this.pPE.PLAYER_2*this.game.activePlayer)).length>0;
           if(!canDiscard){break;}
       }

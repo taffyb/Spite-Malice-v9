@@ -51,9 +51,11 @@ export class ModalDialog implements OnInit {
     if(this.isInputBox){
         this.dialogRef.close({event:'close',data:{option:option,input:this.fromDialog}}); 
     }else{
-        this.dialogRef.close({event:'close',data:{option:option}}); }
+        this.dialogRef.close({event:'close',data:{option:option}}); 
     }
+  }
 }
+
 export enum DialogOptions{
     OK=1,
     CLOSE=2,

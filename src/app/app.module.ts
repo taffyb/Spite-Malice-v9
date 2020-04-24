@@ -17,6 +17,8 @@ import { ProfileDialogComponent } from './profile-dialog/profile-dialog.componen
 
 import { ModalDialog } from './modal-dialog/modal-dialog';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
+import { HomeComponent } from './home/home.component';
+import { SplashComponent } from './splash/splash.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { HelpDialogComponent } from './help-dialog/help-dialog.component';
     BurgerMenuComponent,
     ProfileDialogComponent,
     ModalDialog,
-    HelpDialogComponent
+    HelpDialogComponent,
+    HomeComponent,
+    SplashComponent
   ],
   imports: [
     BrowserModule,

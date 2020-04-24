@@ -14,6 +14,9 @@ export class ProfileService {
 
   constructor() { }
   
+  getActiveProfile():IProfileModel{
+      return this._profile;
+  }
   getProfile$(playerGuid:string):Observable<IProfileModel>{
     let o:Observable<IProfileModel>;
     if(!this._profile){
@@ -24,5 +27,9 @@ export class ProfileService {
   }
   saveProfile(playerGuid:string,profile:IProfileModel){
       this._profile.showStatistics=profile.showStatistics;
+  }
+  getDefaultProfile$():Observable<IProfileModel>{
+      this._profile=DEFAULT_PROFILE;
+      return of(this._profile);
   }
 }

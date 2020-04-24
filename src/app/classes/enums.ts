@@ -61,5 +61,5 @@ export enum GameStatesEnum{
     PLAYING=0,
     PAUSED,
     DRAW,
-    OVER
+    GAME_OVER
 }

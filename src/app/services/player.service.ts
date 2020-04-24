@@ -11,18 +11,31 @@ import {IPlayerModel} from '../classes/players';
 })
 export class PlayerService {
   private _players:IPlayerModel[]= [{guid:'123456',name:'Taffy'},
-                                    {guid:'98765',name:'Suzannah'},
-                                    {guid:'111111',name:'Player'}];
+                                    {guid:'987654',name:'Suzannah'},
+                                    {guid:'111111',name:'Player1'},
+                                    {guid:'222222',name:'Player2'}];
   private _playersByGuid={          
                           '123456':{guid:'123456',name:'Taffy'},
-                          '98765':{guid:'98765',name:'Suzannah'}
+                          '987654':{guid:'987654',name:'Suzannah'},
+                          '111111':{guid:'111111',name:'Player1'},
+                          '222222':{guid:'222222',name:'Player2'}
                          };
-  private _player={guid:'123456',name:'Taffy'};
+  private _player:IPlayerModel;
 
   constructor(private http:HttpClient) {
   }
+  getActivePlayer():IPlayerModel{
+      return this._player;
+  }
   getPlayerByName$(name:string):Observable<IPlayerModel>{
       let player$:Observable<IPlayerModel>;
+      if(!this._player){
+          this._players.forEach(p=>{
+              if(p.name==name){
+                  this._player=p;
+              }
+          });
+      }
       if(!this._player || this._player.name != name){
     
           player$= this.http.get<any>(`${common.endpoint}players?name=${name}`).pipe(
@@ -34,23 +47,19 @@ export class PlayerService {
       }
     return player$;
   }
+  setActivePlayer(playerGuid){
+      this._player=this._playersByGuid[playerGuid];
+  }
   getPlayer$(guid:string):Observable<IPlayerModel>{
       if(this._playersByGuid){
-          return new Observable<IPlayerModel>((observer) => {
-              if(!this._playersByGuid[guid]){
-                  this.http.get<IPlayerModel>(`${common.endpoint}players/${guid}`).subscribe(p=>{
-                      this._playersByGuid[guid]=p;
-                      observer.next(this._playersByGuid[guid]);
-                      observer.complete();
-                  });
-              }else{
-                  observer.next(this._playersByGuid[guid]);
-                  observer.complete();
-              }
-            }); 
-          
-      }else{
-          return null;
+          if(!this._playersByGuid[guid]){
+              this.http.get<IPlayerModel>(`${common.endpoint}players/${guid}`).subscribe(p=>{
+                  this._playersByGuid[guid]=p;
+                  return of(p);
+              });
+          }else{
+              return of(this._playersByGuid[guid]);
+          }
       }
   }
   getPlayers$(guids:string[]=[]):Observable<IPlayerModel[]>{  

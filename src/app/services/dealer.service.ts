@@ -66,10 +66,6 @@ export class DealerService {
   }
   private dealNextCard(game:Game):Card{
       let nextCard:Card;
-      if(game.deck.length==0 && game.recyclePile.length==0){
-          game.gameOver="There are no more cards to deal. We will have to call this a draw.";
-          game.isDraw=true;
-      }
       if(game.deck.length==0){
           this.recycle(game);
       }

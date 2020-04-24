@@ -1,12 +1,13 @@
-import { Component,OnInit } from '@angular/core';
-import { Observable, of} from 'rxjs';
+import {Component,OnInit } from '@angular/core';
+import {Observable, of} from 'rxjs';
 import {IProfileModel} from './classes/profile';
 import {ProfileService} from './services/profile.service';
 import {PlayerService} from './services/player.service';
-import { MatDialog } from '@angular/material';
-import { ModalDialog, DialogOptions } from './modal-dialog/modal-dialog';
-
-
+import {GameService} from './services/game.service';
+import {Game} from './classes/games';
+import {IPlayerModel} from './classes/players';
+import {MatDialog } from '@angular/material';
+import {ModalDialog, DialogOptions } from './modal-dialog/modal-dialog';
 
 @Component({
   selector: 'app-root',
@@ -15,43 +16,27 @@ import { ModalDialog, DialogOptions } from './modal-dialog/modal-dialog';
 })
 export class AppComponent implements OnInit {
     profile$:Observable<IProfileModel>;
-    player;
+    player:IPlayerModel;
+//    game:Game;
 
-    constructor(private profileSvc:ProfileService,
-                private playerSvc:PlayerService,
+    constructor(private playerSvc:PlayerService,
+                private profileSvc:ProfileService,
+                private gameSvc:GameService,
                 public dialog: MatDialog){
-        
-        
-        
+        console.log(`AppComponent: Constructor`);
     }
     
     ngOnInit(){
-        let msg:string = "Please Enter Username";
-        let options:number = DialogOptions.OK+
-                             DialogOptions.CANCEL+
-                             DialogOptions.MANDATORY+
-                             DialogOptions.INPUT;
-        this.openDialog(msg,options);
-        
+//        console.log(`AppComponent: ngOnInit`);
     }
-    
-    openDialog(message:string,options:number): void {
-        const dialogRef = this.dialog.open(ModalDialog, {
-          width: '300px',
-          backdropClass:'custom-dialog-backdrop-class',
-          panelClass:'custom-dialog-panel-class',
-          data: {message: message,
-                 dialogOptions:options
-                }
-        });
-     
-        dialogRef.afterClosed().subscribe(async (result) => {
-          console.log(`onClose Dialog: ${JSON.stringify(result)}`);
-          if(result.data.option == DialogOptions.OK && result.data.input.length>0){
-              this.player = await this.playerSvc.getPlayerByName$(result.data.input).toPromise();
-              console.log(`Observation: ${JSON.stringify(this.player)}`); 
-              this.profile$=this.profileSvc.getProfile$(this.player.guid);              
-          }
-        });
-      }
+
+    loadProfile(player){
+        if(player){
+            this.profile$=this.profileSvc.getProfile$(player.guid); 
+        }
+    }
+    async guestEntry(){
+        this.player = await this.playerSvc.getPlayerByName$("Player1").toPromise();
+        this.profile$=this.profileSvc.getDefaultProfile$();
+    }
 }

@@ -1,5 +1,5 @@
 
-<div class="play-area">
+<div class="play-area" *ngIf="game">
  	
 	<card *ngIf="m.card>-1" 
 		[cardNo]="m.card" 
@@ -13,21 +13,26 @@
 	
 	<div id="game-over" *ngIf="message.length>0"  style="white-space: pre-line;">
 		<h2>{{message}}</h2>
-		<table *ngIf="players$ | async as players">
-			<tr><th colspan=2>{{players[0].name}}</th><th colspan=2>{{players[1].name}}</th></tr>
-			<tr><th>Turns</th><th>Moves</th><th>Turns</th><th>Moves</th></tr>
-			<tr>
-				<td>{{game.stats.players[0].turns}}</td>
-				<td>{{game.stats.players[0].moves}}</td>
-				<td>{{game.stats.players[1].turns}}</td>
-				<td>{{game.stats.players[1].moves}}</td>
-			</tr>
-		</table>
-		<img src="./assets/fireworks.webp"  height="350" width="500">
+		<div *ngIf="message.indexOf('draw') >= 0">
+			<img src="./assets/theend.webp"  height="350" width="500">
+		</div>
+		<div *ngIf="message.indexOf('draw') < 0">
+			<table *ngIf="players$ | async as players">
+				<tr><th colspan=2>{{players[0].name}}</th><th colspan=2>{{players[1].name}}</th></tr>
+				<tr><th>Turns</th><th>Moves</th><th>Turns</th><th>Moves</th></tr>
+				<tr>
+					<td>{{game.stats.players[0].turns}}</td>
+					<td>{{game.stats.players[0].moves}}</td>
+					<td>{{game.stats.players[1].turns}}</td>
+					<td>{{game.stats.players[1].moves}}</td>
+				</tr>
+			</table>
+			<img src="./assets/fireworks.webp"  height="350" width="500">
+		</div>
 	</div>
 	<div *ngIf="message.length==0">	
  	
-		<div *ngIf="players$ | async as players else loading">
+		<div *ngIf="players$ | async as players; else loading">
 			<table *ngIf="profile.showStatistics && players.length>0">
 				<tr><th colspan=2>{{players[0].name}}</th><th colspan=2>{{players[1].name}}</th></tr>
 				<tr><th>Turns</th><th>Moves</th><th>Turns</th><th>Moves</th></tr>
@@ -38,9 +43,9 @@
 					<td>{{game.stats.players[1].moves}}</td>
 				</tr>
 			</table>
-		  	<ng-template #loading>Loading statistics</ng-template>
 		</div>
-		<div *ngIf="players$ | async as players else loading">
+		<ng-template #loading>Loading statistics</ng-template>
+		<div *ngIf="players$ | async as players; else loadingHand">
 			<div class="player" *ngFor="let player of players; let pIdx=index">		
 				<div class="container">
 					<div class="heading">Name</div>
@@ -125,7 +130,7 @@
 					</app-game-pile>
 				</div>		
 			</div>
-		  	<ng-template #loading>Loading players hands...</ng-template>
 		</div>
+		<ng-template #loadingHand>Loading players hands...</ng-template>
 	</div>
 </div>
