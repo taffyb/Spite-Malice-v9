@@ -1,11 +1,10 @@
 import {Component,OnInit } from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {IProfileModel} from './classes/profile';
 import {ProfileService} from './services/profile.service';
 import {PlayerService} from './services/player.service';
 import {GameService} from './services/game.service';
 import {Game} from './classes/games';
-import {IPlayerModel} from './classes/players';
+import {IProfileModel, IPlayerModel} from 's-n-m-lib';
 import {MatDialog } from '@angular/material';
 import {ModalDialog, DialogOptions } from './modal-dialog/modal-dialog';
 

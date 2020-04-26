@@ -2,8 +2,7 @@ import { Component, OnInit,Input,Output, EventEmitter } from '@angular/core';
 import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
 import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
 import { MatDialog } from '@angular/material';
-import {IProfileModel,DEFAULT_PROFILE} from '../classes/profile';
-import {IPlayerModel} from '../classes/players';
+import {IProfileModel, DEFAULT_PROFILE, IPlayerModel} from 's-n-m-lib';
 import {ProfileService} from '../services/profile.service';
 
 @Component({
@@ -34,7 +33,7 @@ export class BurgerMenuComponent implements OnInit {
               //merge profile
               this.profile={...this.profile, ...result.data};  
               console.log(`afterClose: ${JSON.stringify(this.profile)}`);
-              this.profileSvc.saveProfile(this.player.guid,this.profile);
+              this.profileSvc.saveProfile(this.player.uuid,this.profile);
           }
       });
   }

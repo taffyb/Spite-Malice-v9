@@ -1,14 +1,13 @@
 import { Component, OnInit, Input,ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import {Observable} from 'rxjs';
 import {ActivatedRoute, Router } from '@angular/router';
 
 import {Options} from '../classes/options';
-import {SMUtils} from '../classes/sm.utils';
 import {Game} from '../classes/games';
 import {SelectedCard} from '../classes/selected-card';
-import {IMoveModel,Move} from '../classes/moves';
-import {ICardModel, Card} from '../classes/cards';
+import {SMUtils, IProfileModel, IPlayerModel,IMoveModel,Move, ICardModel, Card} from 's-n-m-lib';
 import {IMoveSubscriber} from '../classes/move.subscriber';
-import {PositionsEnum, PlayerPositionsEnum, CardsEnum, MoveTypesEnum, GameStatesEnum} from '../classes/enums';
+import {PositionsEnum, PlayerPositionsEnum, CardsEnum, MoveTypesEnum, GameStatesEnum} from 's-n-m-lib';
 
 import {GameService} from '../services/game.service';
 import {MoveService} from '../services/move.service';
@@ -28,9 +27,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   pPE=PlayerPositionsEnum;
   cE=CardsEnum;
   mtE=MoveTypesEnum;
-  players$;
-  profile;
-  @Input()game:Game;
+  players$:Observable<IPlayerModel[]>;
+  profile:IProfileModel;
+  game:Game;
   from:SelectedCard=new SelectedCard(-1,-1);
   to:SelectedCard=new SelectedCard(-1,-1);
   moves:IMoveModel[]=[];
@@ -66,26 +65,31 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                   this.profile = this.profileSvc.getActiveProfile();
                   this.game.onStateChange$().subscribe({
                       next:async (next)=>{
+                          console.log(`onStateChange:${next}`);
                           switch(next){
                           case GameStatesEnum.GAME_OVER:
                               let players  = await this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).toPromise();
                               this.message = `Congratulations ${players[this.game.activePlayer].name} you are the Winner.`;
+//                              console.log(`onStateChange<GAME_OVER>`);
                               break;
                           case GameStatesEnum.DRAW:
-                              this.message = `There are no cards left. We have to call this a draw.`;
+                              this.message = `There are no cards left. We will have to call this a draw.`;
+//                              console.log(`onStateChange<DRAW>`);
                               break;
                           }},
                       error:(err)=>{},
                       complete:()=>{}
                   });
-                  this.game.getCards(this.pE.PLAYER_HAND_1).splice(0,this.game.getCards(this.pE.PLAYER_HAND_1).length);
-                  this.game.getCards(this.pE.PLAYER_HAND_1).push(new Card(this.cE.ACE,this.pE.PLAYER_HAND_1));
+//                  this.game.getCards(this.pE.PLAYER_PILE).splice(0,this.game.getCards(this.pE.PLAYER_PILE).length);
+//                  this.game.getCards(this.pE.PLAYER_PILE).push(new Card(this.cE.ACE,this.pE.PLAYER_PILE));
+//                  this.game.getCards(this.pE.PLAYER_HAND_1).splice(0,this.game.getCards(this.pE.PLAYER_HAND_1).length);
+//                  this.game.getCards(this.pE.PLAYER_HAND_1).push(new Card(this.cE.ACE,this.pE.PLAYER_HAND_1));
 //                  this.game.getCards(this.pE.PLAYER_HAND_1+10).splice(0,this.game.getCards(this.pE.PLAYER_HAND_1).length);
 //                  this.game.getCards(this.pE.DECK).splice(1,this.game.getCards(this.pE.DECK).length);
+//                  this.game.getCards(this.pE.PLAYER_HAND_1).push(new Card(this.cE.ACE,this.pE.PLAYER_HAND_1));
               }catch(err){
                   this.router.navigate(['/']);
               }
-            
           }
       });
       this.moveSvc.subscribe(this);
@@ -262,7 +266,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
       this.nextMove();
   }
-  select(selectedCard:SelectedCard){
+  async select(selectedCard:SelectedCard){
       if(this.from.cardNo==-1){
           this.from= selectedCard;
       }else{
@@ -277,7 +281,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               move.to=this.to.position;
               move.type = MoveTypesEnum.PLAYER;
               move.isDiscard=this.isDiscard(this.to.position);
-              this.moveSvc.addMove(this.game.uuid, move);
+              const players = await this.players$.toPromise();
+              this.moveSvc.addMove(this.game.uuid,players[this.game.activePlayer].uuid, move);
               
               //reset selected Positions
               this.from = new SelectedCard(-1,-1);
@@ -401,5 +406,12 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       const clientRect=document.querySelector( id).getBoundingClientRect();
       return {top:clientRect.top,left:clientRect.left};
   }
-  
+  playAgain(){
+      const g:Game = this.gameSvc.newGame("new", this.game.player1Uuid, this.game.player2Uuid);
+      this.message="";
+      this.game = g;
+      const url:string = `/play-area/${g.uuid}`;
+      console.log(`route to new game: ${url}`);
+      this.router.navigate([url]);
+  }
 }

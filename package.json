@@ -23,6 +23,7 @@
     "@angular/router": "~8.2.11",
     "hammerjs": "^2.0.8",
     "rxjs": "~6.4.0",
+    "s-n-m-lib": "^1.1.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

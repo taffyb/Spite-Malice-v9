@@ -1,6 +1,6 @@
 import {IGameModel, GameFactory, Game} from '../classes/games';
-import {ICardModel, Card} from '../classes/cards';
-import {PositionsEnum, CardsEnum} from '../classes/enums';
+import {ICardModel, Card} from 's-n-m-lib';
+import {PositionsEnum, CardsEnum} from 's-n-m-lib';
 import {DealerService} from './dealer.service';
 import {Injectable} from '@angular/core';
 import { HttpClient } from "@angular/common/http";
@@ -34,7 +34,11 @@ export class GameService{
     
     newGame(name:string,player1Uuid:string,player2Uuid:string):Game{
         const deck:number[] = this.dealerSvc.getDeck();
-        const game:Game=GameFactory.newLocalGame(name,player1Uuid, player2Uuid,deck);
+        const g:IGameModel=GameFactory.newLocalGame(name,player1Uuid, player2Uuid,deck);
+//        console.log(`New Game:        
+//            ${JSON.stringify(g)}`);
+        const game:Game=Game.fromModel(g);
+        
         this._games[game.uuid]=game;
         return game;
     }

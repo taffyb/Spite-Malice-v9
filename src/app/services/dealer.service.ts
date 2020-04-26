@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Game} from '../classes/games';
-import {IMoveModel, Move} from '../classes/moves';
-import {ICardModel, Card} from '../classes/cards';
-import {PositionsEnum, CardsEnum, PlayerPositionsEnum, MoveTypesEnum} from '../classes/enums';
+import {IMoveModel, Move, ICardModel, Card} from 's-n-m-lib';
+import {PositionsEnum, CardsEnum, PlayerPositionsEnum, MoveTypesEnum} from 's-n-m-lib';
 
 import {MoveService} from '../services/move.service';
 
@@ -43,11 +42,18 @@ export class DealerService {
       let moves:Move[]=[];
       
       const HAND_1 = PositionsEnum.PLAYER_HAND_1+(activePlayer*PlayerPositionsEnum.PLAYER_2);
-      const STACK_1 = PositionsEnum.PLAYER_STACK_1+(activePlayer*PlayerPositionsEnum.PLAYER_2);
-
-      for(let i=HAND_1;i<STACK_1;i++){
-      if(game.getCards(i).length==0){
-              let nextCard:Card = this.dealNextCard(game);
+      const HAND_5 = PositionsEnum.PLAYER_HAND_5+(activePlayer*PlayerPositionsEnum.PLAYER_2);
+//      console.log(`fillHand:
+//      deck: ${game.deck.length} 
+//      cards[DECK]: ${game.getCards(PositionsEnum.DECK).length}`); 
+      for(let i=HAND_1;i<=HAND_5;i++){
+          if(game.getCards(i).length==0){
+              let nextCard:Card;
+              try{
+                  nextCard= this.dealNextCard(game);
+              }catch(e){
+                  game.outOfCards();
+              }
               c++;
               let move = new Move();
               
@@ -60,7 +66,7 @@ export class DealerService {
       }
 
       const addMove = new Promise((resolve,reject)=>{
-          this.moveSvc.addMoves(game.uuid, moves);
+          this.moveSvc.addMoves(game.uuid,"", moves);
       });
       return moves;
   }

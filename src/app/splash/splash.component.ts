@@ -1,7 +1,7 @@
 import { Component, OnInit,Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ModalDialog, DialogOptions } from '../modal-dialog/modal-dialog';
-import {IPlayerModel} from '../classes/players';
+import {IPlayerModel} from 's-n-m-lib';
 import {PlayerService} from '../services/player.service';
 
 @Component({

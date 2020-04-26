@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, Output,EventEmitter } from '@angular/core';
 import {Options} from '../classes/options';
 import {SelectedCard} from '../classes/selected-card'
-import {Card} from '../classes/cards';
-import {CardsEnum} from '../classes/enums';
-import {SMUtils} from '../classes/sm.utils';
+import {SMUtils, Card} from 's-n-m-lib';
+import {CardsEnum} from 's-n-m-lib';
 
 @Component({
   selector: 'app-game-pile',

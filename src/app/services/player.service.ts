@@ -4,21 +4,21 @@ import {Observable, of} from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 import * as common from './service.common';
-import {IPlayerModel} from '../classes/players';
+import {IPlayerModel} from 's-n-m-lib';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerService {
-  private _players:IPlayerModel[]= [{guid:'123456',name:'Taffy'},
-                                    {guid:'987654',name:'Suzannah'},
-                                    {guid:'111111',name:'Player1'},
-                                    {guid:'222222',name:'Player2'}];
+  private _players:IPlayerModel[]= [{uuid:'123456',name:'Taffy'},
+                                    {uuid:'987654',name:'Suzannah'},
+                                    {uuid:'111111',name:'Player1'},
+                                    {uuid:'222222',name:'Player2'}];
   private _playersByGuid={          
-                          '123456':{guid:'123456',name:'Taffy'},
-                          '987654':{guid:'987654',name:'Suzannah'},
-                          '111111':{guid:'111111',name:'Player1'},
-                          '222222':{guid:'222222',name:'Player2'}
+                          '123456':{uuid:'123456',name:'Taffy'},
+                          '987654':{uuid:'987654',name:'Suzannah'},
+                          '111111':{uuid:'111111',name:'Player1'},
+                          '222222':{uuid:'222222',name:'Player2'}
                          };
   private _player:IPlayerModel;
 
@@ -80,7 +80,7 @@ export class PlayerService {
 //       );
       const players$:Observable<IPlayerModel[]>=of(this._players);
       this._players.forEach((p)=>{
-          this._playersByGuid[p.guid]=p;
+          this._playersByGuid[p.uuid]=p;
       });
       return players$;
   }

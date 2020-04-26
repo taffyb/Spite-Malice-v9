@@ -4,7 +4,7 @@ import {Observable, of} from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 import * as common from './service.common';
-import {IProfileModel,DEFAULT_PROFILE} from '../classes/profile';
+import {IProfileModel,DEFAULT_PROFILE} from 's-n-m-lib';
 
 @Injectable({
   providedIn: 'root'

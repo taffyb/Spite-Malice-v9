@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output,EventEmitter } from '@angular/core';
 import {Options} from '../classes/options';
 import {SelectedCard} from '../classes/selected-card'
-import {Card} from '../classes/cards';
+import {Card} from 's-n-m-lib';
 
 @Component({
   selector: 'app-pile',

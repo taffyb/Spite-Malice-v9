@@ -1,8 +1,8 @@
 import {Observable} from 'rxjs';
 import {IGameModel, Game} from '../classes/games';
-import {IMoveModel, Move} from '../classes/moves';
+import {IMoveModel, Move} from 's-n-m-lib';
 import {IMoveSubscriber} from '../classes/move.subscriber';
-import {PositionsEnum, CardsEnum, MoveTypesEnum} from '../classes/enums';
+import {PositionsEnum, CardsEnum, MoveTypesEnum} from 's-n-m-lib';
 import {Injectable} from '@angular/core';
 
 @Injectable({
@@ -30,13 +30,13 @@ export class MoveService{
         });
     }
     
-    addMove(gameUuid:string,m:IMoveModel){
+    addMove(gameUuid:string,playerUuid:string,m:IMoveModel){
 //        console.log(`MoveSvc.addMove: `);
         let moves:IMoveModel[]=[];
         moves.push(m);
-        this.addMoves(gameUuid,moves);
+        this.addMoves(gameUuid,playerUuid,moves);
     }
-    addMoves(gameUuid:string,ms:IMoveModel[]){
+    addMoves(gameUuid:string,playerUuid:string,ms:IMoveModel[]){
 //        console.log(`MoveSvc.addMoves: `);
 
         let moves:IMoveModel[];
@@ -47,6 +47,9 @@ export class MoveService{
             moves=this._moves[gameUuid];
         }
         ms.forEach(m=>{
+            m.gameUuid=gameUuid;
+            if(playerUuid){m.playerUuid=playerUuid;}
+            m.id = this._moves[gameUuid].length+1;
             moves.push(m);
         });
         if(moves.length>0){
@@ -68,7 +71,7 @@ export class MoveService{
             m.type=MoveTypesEnum.RECYCLE;
             moves.push(m);
         }
-        this.addMoves(game.uuid,moves);
+        this.addMoves(game.uuid,"",moves);
     }
 }
           
