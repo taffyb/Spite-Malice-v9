@@ -13,6 +13,7 @@ import {IPlayerModel} from 's-n-m-lib';
 export class HomeComponent implements OnInit {
   player:IPlayerModel;
   game:IGameModel;
+  games$;
   constructor(
           private route: ActivatedRoute,
           private gameSvc:GameService,
@@ -20,10 +21,11 @@ export class HomeComponent implements OnInit {
       console.log(`HomeComponent: Constructor`);
       this.player = playerSvc.getActivePlayer();
       this.game = this.gameSvc.newGame("new",this.player.uuid,"222222");
+
+//      console.log(`New Game - active Player :${this.game.activePlayer}`);
   }
 
   ngOnInit() {
       console.log(`HomeComponent: ngOnInit`);
   }
-
 }

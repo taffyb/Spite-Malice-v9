@@ -55,29 +55,29 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           private profileSvc:ProfileService, 
           private renderer:Renderer2) { 
       console.log(`PlayAreaComponent: constructor`);
-      route.params.subscribe((val) => {
+      route.params.subscribe(async (val) => {
           const gameUuid = val.gameUuid;
           if(gameUuid){
               try{
-                  this.game = gameSvc.getGame(gameUuid); 
-                  
+//                  console.log(`PlayAreaComponent Before load Game`);
+                  this.game = await gameSvc.getGame$(gameUuid).toPromise(); 
+//                  console.log(`PlayAreaComponent Game Loaded ${JSON.stringify(this.game)}`);
                   this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
                   this.profile = this.profileSvc.getActiveProfile();
                   this.game.onStateChange$().subscribe({
                       next:async (next)=>{
-                          console.log(`onStateChange:${next}`);
                           switch(next){
                           case GameStatesEnum.GAME_OVER:
                               let players  = await this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).toPromise();
                               this.message = `Congratulations ${players[this.game.activePlayer].name} you are the Winner.`;
-//                              console.log(`onStateChange<GAME_OVER>`);
                               break;
                           case GameStatesEnum.DRAW:
                               this.message = `There are no cards left. We will have to call this a draw.`;
-//                              console.log(`onStateChange<DRAW>`);
                               break;
                           }},
-                      error:(err)=>{},
+                      error:(err)=>{
+                        console.error(`Error onStateChange ${JSON.stringify(err)}`);
+                      },
                       complete:()=>{}
                   });
 //                  this.game.getCards(this.pE.PLAYER_PILE).splice(0,this.game.getCards(this.pE.PLAYER_PILE).length);
@@ -88,6 +88,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
 //                  this.game.getCards(this.pE.DECK).splice(1,this.game.getCards(this.pE.DECK).length);
 //                  this.game.getCards(this.pE.PLAYER_HAND_1).push(new Card(this.cE.ACE,this.pE.PLAYER_HAND_1));
               }catch(err){
+                  console.error(`catch block ${err} ${JSON.stringify(err)}`);
                   this.router.navigate(['/']);
               }
           }

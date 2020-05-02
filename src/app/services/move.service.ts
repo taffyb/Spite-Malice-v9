@@ -4,6 +4,8 @@ import {IMoveModel, Move} from 's-n-m-lib';
 import {IMoveSubscriber} from '../classes/move.subscriber';
 import {PositionsEnum, CardsEnum, MoveTypesEnum} from 's-n-m-lib';
 import {Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import * as common from './service.common';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +14,8 @@ export class MoveService{
    private _moves:IMoveModel[][]=[]; //key by game UUID so can hold the moves for multiple games at same time.
    private _moveSubscribers:IMoveSubscriber[]=[];
 
-    constructor(){
-        
+    constructor(private http:HttpClient){
+        console.log(`MoveService.constructor`);
     }
 
     subscribe(subscriber:IMoveSubscriber){
@@ -54,10 +56,25 @@ export class MoveService{
         });
         if(moves.length>0){
             this.publishMoves(gameUuid,ms);
+            this.saveMoves(gameUuid,ms);
         }
     }
     saveMoves(gameUuid:string,ms:IMoveModel[]){
-        throw new Error("Method not implemented.");
+        ms.forEach((move)=>{   
+            this.http.post<IMoveModel>(`${common.endpoint}games/${gameUuid}/moves`,move).subscribe(
+                (val) => {
+                    console.log(`POST call successful value returned in body ${JSON.stringify(val)}`);
+                },
+                response => {
+                    if(response.status != 200){
+                        console.error(`Error posting move:${JSON.stringify(move)}
+                        ${JSON.stringify(response)}`);
+                    }
+                },
+                () => {
+                    console.log("The POST observable is now completed.");
+             });
+         });
     }
     
     moveToRecycle(game:Game,position:number){

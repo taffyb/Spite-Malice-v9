@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http'; 
+import { MaterialModules } from '../material-module';
+import {Options} from '../classes/options';
 
 import { PlayerStackComponent } from './player-stack.component';
 
@@ -8,7 +11,13 @@ describe('PlayerStackComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PlayerStackComponent ]
+    imports: [
+              /*Options,*/
+              HttpClientModule,
+              MaterialModules/*,
+              RouterTestingModule*/
+            ],
+      declarations: [ Options,PlayerStackComponent ]
     })
     .compileComponents();
   }));

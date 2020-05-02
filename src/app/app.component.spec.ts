@@ -1,15 +1,25 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MaterialModules } from './material-module';
+import { HttpClientModule } from '@angular/common/http'; 
+
+
 import { AppComponent } from './app.component';
+import { BurgerMenuComponent } from './burger-menu/burger-menu.component';
+import { SplashComponent } from './splash/splash.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        HttpClientModule,
+        MaterialModules,
         RouterTestingModule
       ],
       declarations: [
-        AppComponent
+        AppComponent,
+        BurgerMenuComponent,
+        SplashComponent
       ],
     }).compileComponents();
   }));
@@ -26,10 +36,4 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('Spite-Malice-v9');
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('Spite-Malice-v9 app is running!');
-  });
 });

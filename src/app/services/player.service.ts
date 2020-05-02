@@ -20,35 +20,35 @@ export class PlayerService {
                           '111111':{uuid:'111111',name:'Player1'},
                           '222222':{uuid:'222222',name:'Player2'}
                          };
-  private _player:IPlayerModel;
+  private _activePlayer:IPlayerModel;
 
   constructor(private http:HttpClient) {
   }
   getActivePlayer():IPlayerModel{
-      return this._player;
+      return this._activePlayer;
   }
   getPlayerByName$(name:string):Observable<IPlayerModel>{
       let player$:Observable<IPlayerModel>;
-      if(!this._player){
+      if(!this._activePlayer){
           this._players.forEach(p=>{
               if(p.name==name){
-                  this._player=p;
+                  this._activePlayer=p;
               }
           });
       }
-      if(!this._player || this._player.name != name){
+      if(!this._activePlayer || this._activePlayer.name != name){
     
           player$= this.http.get<any>(`${common.endpoint}players?name=${name}`).pipe(
               tap((player) => console.log(`data.service.getPlayer(): ${player}`)),
               catchError(common.handleError<any>('getPlayerByName'))
           );
       }else{
-          player$=of(this._player);
+          player$=of(this._activePlayer);
       }
     return player$;
   }
   setActivePlayer(playerGuid){
-      this._player=this._playersByGuid[playerGuid];
+      this._activePlayer=this._playersByGuid[playerGuid];
   }
   getPlayer$(guid:string):Observable<IPlayerModel>{
       if(this._playersByGuid){

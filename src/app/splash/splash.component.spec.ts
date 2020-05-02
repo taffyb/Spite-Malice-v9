@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http'; 
+import { MaterialModules } from '../material-module';
 
 import { SplashComponent } from './splash.component';
 
@@ -8,6 +10,11 @@ describe('SplashComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+    imports: [
+              HttpClientModule,
+              MaterialModules/*,
+              RouterTestingModule*/
+            ],
       declarations: [ SplashComponent ]
     })
     .compileComponents();

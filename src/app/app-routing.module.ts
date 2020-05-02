@@ -5,7 +5,7 @@ import { PlayAreaComponent }   from './play-area/play-area.component';
 import { HomeComponent }   from './home/home.component';
 
 const routes: Routes = [
-                        { path: '', redirectTo: '/home', pathMatch: 'full' },
+                        { path: '', redirectTo: '/', pathMatch: 'full' },
                         { path: 'play-area/:gameUuid', component: PlayAreaComponent},
                         { path: 'home', component: HomeComponent}
                    ];

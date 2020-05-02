@@ -1,18 +1,23 @@
 import {EventEmitter} from '@angular/core';
 import {Observable, Subscriber} from 'rxjs';
 
-import {IGameModel, IMoveModel, GameFactory, Game as libGame} from 's-n-m-lib';
+import {SMUtils, ICardModel,IGameModel, IMoveModel, GameFactory as libGameFactory, Game as libGame} from 's-n-m-lib';
 import {MoveTypesEnum , GameStatesEnum, PositionsEnum} from 's-n-m-lib';
 
 
 export class Game extends libGame{
     stats:{players:{turns:number,moves:number}[]}={players:[{turns:0,moves:0},{turns:0,moves:0}]};
     stateEmitter:Subscriber<GameStatesEnum>;
+    // convienience 
+    deck:ICardModel[];
+    recyclePile:ICardModel[];
+  
 
     private constructor(){super();}
     
-    static fromModel(model:IGameModel):Game{
+    static fromModel(model:any):Game{
         const g:Game=new Game();
+//        console.log(`Model: ${JSON.stringify(model)}`);
         g.uuid = model.uuid;
         g.name= model.name;
         g.player1Uuid=model.player1Uuid;
@@ -60,5 +65,19 @@ export class Game extends libGame{
         this.state= GameStatesEnum.DRAW;
     }
 }
-export {IGameModel, GameFactory} 
+export class GameFactory extends libGameFactory{
+    constructor(){
+        super();
+    }
+    static newGame(name:string, player1Uuid: string, player2Uuid: string,deck:number[],debug=false):IGameModel{
+//        console.log(`local GameFactory (${name},${player1Uuid},${player2Uuid}, ${deck},${debug})`);
+        const game= super.newGame(name,player1Uuid,player2Uuid,deck,debug);
+
+//        console.log(`=======================`);
+//        console.log(`Player<0> PILE ${SMUtils.toFaceNumber(game.cards[PositionsEnum.PLAYER_PILE][game.cards[PositionsEnum.PLAYER_PILE].length-1].cardNo)}`);
+//        console.log(`Player<1> PILE ${SMUtils.toFaceNumber(game.cards[PositionsEnum.PLAYER_PILE+10][game.cards[PositionsEnum.PLAYER_PILE+10].length-1].cardNo)}`);
+        return game
+    }
+}
+export {IGameModel} 
 
