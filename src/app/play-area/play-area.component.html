@@ -68,7 +68,7 @@
 				<div class="container">
 					<div class="heading">Hand</div>
 					<div class="player-hand">
-						<ng-container *ngIf="pIdx==game.activePlayer">
+						<ng-container *ngIf="pIdx==game.activePlayer; else InActivePlayer">
 							<app-pile *ngFor="let i of [0,1,2,3,4]"	
 								id="pos{{pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)}}"
 								[pos]="pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)"
@@ -77,7 +77,7 @@
 								(onSelect)="select($event)">
 							</app-pile>
 						</ng-container>
-						<ng-container *ngIf="pIdx!==game.activePlayer">
+						<ng-template #InActivePlayer>
 							<app-pile *ngFor="let i of [0,1,2,3,4]"	
 								id="pos{{pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)}}"
 								[pos]="pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx)"			
@@ -86,7 +86,7 @@
 								[options]="getOptions(pE.PLAYER_HAND_1+i+(pPE.PLAYER_2*pIdx))"
 								(onSelect)="select($event)">
 							</app-pile>
-						</ng-container>
+						</ng-template>
 					</div>
 				</div>			
 				<div class="container">

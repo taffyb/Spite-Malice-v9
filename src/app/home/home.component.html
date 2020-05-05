@@ -1,4 +1,15 @@
-<div *ngIf="game">
-	<h1>Welcome {{player.name}}</h1>
-	<a  routerLink="/play-area/{{game.uuid}}">Go to game</a>
-</div>
+
+<h1>Welcome {{player.name}}</h1>
+
+<div class="link" (click)="newGame()">New Game</div> 
+<!-- <a  routerLink="/play-area/{{game.uuid}}">Go to game</a> -->
+<p>
+<!-- <app-report></app-report>-->
+Game History:
+<ul *ngIf="games$ | async as games; else loading">
+	<li *ngFor="let game of games">
+	<!-- <a  routerLink="/play-area/{{game.uuid}}">{{game.name}}</a> -->
+	<app-game-item [game]="game" ></app-game-item>
+	</li>
+</ul>
+<ng-template #loading>Loading ...</ng-template>

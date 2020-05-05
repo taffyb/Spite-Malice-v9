@@ -19,6 +19,8 @@ import { ModalDialog } from './modal-dialog/modal-dialog';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
 import { HomeComponent } from './home/home.component';
 import { SplashComponent } from './splash/splash.component';
+import { ReportComponent } from './report/report.component';
+import { GameItemComponent } from './game-item/game-item.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { SplashComponent } from './splash/splash.component';
     ModalDialog,
     HelpDialogComponent,
     HomeComponent,
-    SplashComponent
+    SplashComponent,
+    ReportComponent,
+    GameItemComponent
   ],
   imports: [
     BrowserModule,

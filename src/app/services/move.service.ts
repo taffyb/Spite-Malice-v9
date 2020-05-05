@@ -90,5 +90,9 @@ export class MoveService{
         }
         this.addMoves(game.uuid,"",moves);
     }
+    getMoves$(gameUuid:IGameModel,playerUuid?:string,limit?:number):Observable<IMoveModel[]>{
+        const url = `${common.endpoint}games/${gameUuid}/moves?${playerUuid?'playerUuid='+playerUuid:''}&${limit?'limit='+limit:''}`;
+        return this.http.get<IMoveModel[]>(url);
+    }
 }
           

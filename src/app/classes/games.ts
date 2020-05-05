@@ -25,6 +25,7 @@ export class Game extends libGame{
         g.activePlayer=model.activePlayer;
         g.state=model.state;
         g.cards=model.cards;
+        g.createDateTime = model.createDateTime;
         g.deck=g.cards[PositionsEnum.DECK];
         g.recyclePile=g.cards[PositionsEnum.RECYCLE];
         

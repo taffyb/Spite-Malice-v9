@@ -42,8 +42,9 @@ export class GameService{
             }           
         });
     }
-    getGames():Observable<IGameModel[]>{
-        const url = `${common.endpoint}games`;
+    getGames$(playerUuid?:string,limit?:number):Observable<IGameModel[]>{
+        const url = `${common.endpoint}games?${playerUuid?'playerUuid='+playerUuid:''}&${limit?'limit='+limit:''}`;
+        console.log(`getGames$: ${url}`);
         return this.http.get<IGameModel[]>(url);
     }
     newGame(name:string,player1Uuid:string,player2Uuid:string):Game{

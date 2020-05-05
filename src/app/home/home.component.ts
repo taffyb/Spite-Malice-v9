@@ -15,17 +15,22 @@ export class HomeComponent implements OnInit {
   game:IGameModel;
   games$;
   constructor(
+          private router: Router,
           private route: ActivatedRoute,
           private gameSvc:GameService,
           private playerSvc:PlayerService) {
       console.log(`HomeComponent: Constructor`);
       this.player = playerSvc.getActivePlayer();
-      this.game = this.gameSvc.newGame("new",this.player.uuid,"222222");
-
-//      console.log(`New Game - active Player :${this.game.activePlayer}`);
+      this.games$= gameSvc.getGames$(this.player.uuid,3);
+      console.log(`Active Player :${JSON.stringify(this.player)}`);
   }
 
   ngOnInit() {
       console.log(`HomeComponent: ngOnInit`);
+  }
+  
+  newGame(){
+      const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,"222222"); 
+      this.router.navigate([`/play-area/${game.uuid}`]);
   }
 }
