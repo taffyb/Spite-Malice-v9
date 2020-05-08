@@ -19,7 +19,7 @@ import { ModalDialog } from './modal-dialog/modal-dialog';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
 import { HomeComponent } from './home/home.component';
 import { SplashComponent } from './splash/splash.component';
-import { ReportComponent } from './report/report.component';
+import { TimezoneTestComponent } from './timezone-test/timezone-test.component';
 import { GameItemComponent } from './game-item/game-item.component';
 
 @NgModule({
@@ -36,7 +36,7 @@ import { GameItemComponent } from './game-item/game-item.component';
     HelpDialogComponent,
     HomeComponent,
     SplashComponent,
-    ReportComponent,
+    TimezoneTestComponent,
     GameItemComponent
   ],
   imports: [

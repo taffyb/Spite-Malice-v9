@@ -4,7 +4,7 @@
 <div class="link" (click)="newGame()">New Game</div> 
 <!-- <a  routerLink="/play-area/{{game.uuid}}">Go to game</a> -->
 <p>
-<!-- <app-report></app-report>-->
+<!-- <app-timezone-test></app-timezone-test>-->
 Game History:
 <ul *ngIf="games$ | async as games; else loading">
 	<li *ngFor="let game of games">

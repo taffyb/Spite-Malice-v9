@@ -23,7 +23,6 @@ export class MoveService{
         this._moveSubscribers.push(subscriber); 
     }
     publishMoves(gameUuid:string,ms:IMoveModel[]){
-//        console.log(`MoveSvc.publishMoves: this.game.uuid ${gameUuid}`);
         this._moveSubscribers.forEach(s=>{
             new Promise((resolve,reject)=>{
                 s.performMoves(gameUuid,ms);
@@ -33,13 +32,11 @@ export class MoveService{
     }
     
     addMove(gameUuid:string,playerUuid:string,m:IMoveModel){
-//        console.log(`MoveSvc.addMove: `);
         let moves:IMoveModel[]=[];
         moves.push(m);
         this.addMoves(gameUuid,playerUuid,moves);
     }
     addMoves(gameUuid:string,playerUuid:string,ms:IMoveModel[]){
-//        console.log(`MoveSvc.addMoves: `);
 
         let moves:IMoveModel[];
         if(!this._moves[gameUuid]){
@@ -70,10 +67,7 @@ export class MoveService{
                         console.error(`Error posting move:${JSON.stringify(move)}
                         ${JSON.stringify(response)}`);
                     }
-                },
-                () => {
-                    console.log("The POST observable is now completed.");
-             });
+                });
          });
     }
     

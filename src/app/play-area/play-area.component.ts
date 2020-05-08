@@ -59,13 +59,12 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           const gameUuid = val.gameUuid;
           if(gameUuid){
               try{
-//                  console.log(`PlayAreaComponent Before load Game`);
                   this.game = await gameSvc.getGame$(gameUuid).toPromise(); 
-//                  console.log(`PlayAreaComponent Game Loaded ${JSON.stringify(this.game)}`);
                   this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
                   this.profile = this.profileSvc.getActiveProfile();
                   this.game.onStateChange$().subscribe({
                       next:async (next)=>{
+                          this.gameSvc.updateGameState(this.game.toModel());
                           switch(next){
                           case GameStatesEnum.GAME_OVER:
                               let players  = await this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).toPromise();
@@ -125,7 +124,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
   }
   nextMove(){
-//      console.log(`nextMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
       let m:IMoveModel;
       if(this.moves.length>0){
           m = this.moves.splice(0,1)[0]
@@ -176,7 +174,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       return duration;
   }
   startAnimation(m:IMoveModel){
-//      console.log(`startAnimation: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
       if(!this.animating){
           this.fromRect=this.pos2ClientRec(m.from);
           this.toRect=this.pos2ClientRec(m.to);
@@ -197,20 +194,20 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       if(evt.fromState=='from'){
         // move the card
         this.animating=false;
-//        console.log(`animDone.before performMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
         this.game.performMove(this.m);
-//        console.log(`animDone.after performMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
         if(this.m.type==this.mtE.PLAYER){
             if(this.m.isDiscard){
                 this.m=new Move();
                 this.animTrigger='from';
                 this.game.switchPlayer();
                 this.dealerSvc.fillHand(this.game.activePlayer, this.game);
+                this.gameSvc.updateGame(this.game.toModel());
             }else{
                 if(this.game.cardsInHand()==0){
                     this.m=new Move();
                     this.animTrigger='from';
                     this.dealerSvc.fillHand(this.game.activePlayer, this.game);
+                    this.gameSvc.updateGame(this.game.toModel());
                 }else{
                     let to = this.m.to;
                     let c = this.m.card;
@@ -240,17 +237,18 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   * @param m
   */
   performMove(m:IMoveModel){
-//      console.log(`performMove: this.game.uuid - ${this.game?this.game.uuid:'game undefined'}`);
       this.game.performMove(m);
       if(m.type==this.mtE.PLAYER){
           if(m.isDiscard){
               this.m=new Move();
-              this.game.activePlayer=(this.game.activePlayer==0?1:0);
+              this.game.switchPlayer();
               this.dealerSvc.fillHand(this.game.activePlayer, this.game);
+              this.gameSvc.updateGame(this.game.toModel());
           }else{
               if(this.game.cardsInHand()==0){
                   this.m=new Move();
                   this.dealerSvc.fillHand(this.game.activePlayer, this.game);
+                  this.gameSvc.updateGame(this.game.toModel());
               }else{
                   let to = m.to;
                   let c = m.card;

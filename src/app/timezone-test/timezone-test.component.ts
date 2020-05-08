@@ -3,11 +3,11 @@ import {ProfileService} from '../services/profile.service';
 import {Location, TimeZone} from '../classes/timezones';
 
 @Component({
-  selector: 'app-report',
-  templateUrl: './report.component.html',
-  styleUrls: ['./report.component.css']
+  selector: 'app-timezone-test',
+  templateUrl: './timezone-test.component.html',
+  styleUrls: ['./timezone-test.component.css']
 })
-export class ReportComponent implements OnInit {
+export class TimezoneTestComponent implements OnInit {
     locations$;
     timezones={};
   constructor(private profileSvc:ProfileService) { 
