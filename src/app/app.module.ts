@@ -21,6 +21,8 @@ import { HomeComponent } from './home/home.component';
 import { SplashComponent } from './splash/splash.component';
 import { TimezoneTestComponent } from './timezone-test/timezone-test.component';
 import { GameItemComponent } from './game-item/game-item.component';
+import { MoveRptComponent } from './move-rpt/move-rpt.component';
+import { GaugeComponent } from './gauge/gauge.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { GameItemComponent } from './game-item/game-item.component';
     HomeComponent,
     SplashComponent,
     TimezoneTestComponent,
-    GameItemComponent
+    GameItemComponent,
+    MoveRptComponent,
+    GaugeComponent
   ],
   imports: [
     BrowserModule,

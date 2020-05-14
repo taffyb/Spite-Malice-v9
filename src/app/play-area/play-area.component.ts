@@ -372,6 +372,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                 SMUtils.toFaceNumber(this.from.cardNo)==this.cE.JOKER);
            }
       }
+      if(this.game.state==GameStatesEnum.GAME_OVER){
+          opt.selectableFrom=false;
+      }
       return opt;
   }
   isDiscard(position:number):boolean{

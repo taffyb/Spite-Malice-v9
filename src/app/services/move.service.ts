@@ -1,4 +1,5 @@
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
+import { map } from 'rxjs/operators';
 import {IGameModel, Game} from '../classes/games';
 import {IMoveModel, Move} from 's-n-m-lib';
 import {IMoveSubscriber} from '../classes/move.subscriber';
@@ -70,7 +71,6 @@ export class MoveService{
                 });
          });
     }
-    
     moveToRecycle(game:Game,position:number){
         const moves:IMoveModel[]=[];
         for(let i=game.getCards(position).length-1;i>=0;i--){
@@ -86,7 +86,17 @@ export class MoveService{
     }
     getMoves$(gameUuid:IGameModel,playerUuid?:string,limit?:number):Observable<IMoveModel[]>{
         const url = `${common.endpoint}games/${gameUuid}/moves?${playerUuid?'playerUuid='+playerUuid:''}&${limit?'limit='+limit:''}`;
-        return this.http.get<IMoveModel[]>(url);
+        return this.http.get<IMoveModel[]>(url).pipe(
+            map((data)=>{
+                const moves:IMoveModel[]=[];
+                data.forEach((m)=>{
+//                    console.log(`getMoves$ move:${JSON.stringify(m)}`);
+                    const move:IMoveModel=Move.fromModel(m);
+                    moves.push(move);
+                });
+                return moves;
+            })
+        );
     }
 }
           
