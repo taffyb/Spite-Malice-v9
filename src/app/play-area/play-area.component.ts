@@ -14,6 +14,7 @@ import {MoveService} from '../services/move.service';
 import {DealerService} from '../services/dealer.service';
 import {PlayerService} from '../services/player.service';
 import {ProfileService} from '../services/profile.service';
+import {WsService} from '../services/ws.service';
 import {Animations,DEFAULT_DURATIONS} from './animation';
 
 @Component({
@@ -53,7 +54,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           private dealerSvc:DealerService, 
           private playerSvc:PlayerService,  
           private profileSvc:ProfileService, 
-          private renderer:Renderer2) { 
+          private renderer:Renderer2,
+          private wsSvc:WsService) { 
       console.log(`PlayAreaComponent: constructor`);
       route.params.subscribe(async (val) => {
           const gameUuid = val.gameUuid;
@@ -79,6 +81,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                       },
                       complete:()=>{}
                   });
+                  const activePlayer:IPlayerModel= playerSvc.getActivePlayer();
+                  wsSvc.joinGame(activePlayer.uuid,this.game.uuid);
 //                  this.game.getCards(this.pE.PLAYER_PILE).splice(0,this.game.getCards(this.pE.PLAYER_PILE).length);
 //                  this.game.getCards(this.pE.PLAYER_PILE).push(new Card(this.cE.ACE,this.pE.PLAYER_PILE));
 //                  this.game.getCards(this.pE.PLAYER_HAND_1).splice(0,this.game.getCards(this.pE.PLAYER_HAND_1).length);

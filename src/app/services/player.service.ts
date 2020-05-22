@@ -27,6 +27,9 @@ export class PlayerService {
   getActivePlayer():IPlayerModel{
       return this._activePlayer;
   }
+  getOpponents$(uuid):Observable<IPlayerModel[]>{
+      return this.http.get<IPlayerModel[]>(`${common.endpoint}players/${uuid}/opponents`);
+  }
   getPlayerByName$(name:string):Observable<IPlayerModel>{
       let player$:Observable<IPlayerModel>;
       if(!this._activePlayer){
@@ -50,24 +53,24 @@ export class PlayerService {
   setActivePlayer(playerGuid){
       this._activePlayer=this._playersByGuid[playerGuid];
   }
-  getPlayer$(guid:string):Observable<IPlayerModel>{
+  getPlayer$(uuid:string):Observable<IPlayerModel>{
       if(this._playersByGuid){
-          if(!this._playersByGuid[guid]){
-              this.http.get<IPlayerModel>(`${common.endpoint}players/${guid}`).subscribe(p=>{
-                  this._playersByGuid[guid]=p;
+          if(!this._playersByGuid[uuid]){
+              this.http.get<IPlayerModel>(`${common.endpoint}players/${uuid}`).subscribe(p=>{
+                  this._playersByGuid[uuid]=p;
                   return of(p);
               });
           }else{
-              return of(this._playersByGuid[guid]);
+              return of(this._playersByGuid[uuid]);
           }
       }
   }
-  getPlayers$(guids:string[]=[]):Observable<IPlayerModel[]>{  
+  getPlayers$(uuids:string[]=[]):Observable<IPlayerModel[]>{  
       let players=[];
-      if(guids.length !=2){
-          throw new Error(`wrong number of players (${guids.length})`);
+      if(uuids.length !=2){
+          throw new Error(`wrong number of players (${uuids.length})`);
       }
-      guids.forEach(async (guid)=>{
+      uuids.forEach(async (guid)=>{
           let p = await this.getPlayer$(guid).toPromise();
           players.push(p);
       });

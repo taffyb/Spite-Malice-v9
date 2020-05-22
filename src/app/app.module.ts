@@ -23,6 +23,7 @@ import { TimezoneTestComponent } from './timezone-test/timezone-test.component';
 import { GameItemComponent } from './game-item/game-item.component';
 import { MoveRptComponent } from './move-rpt/move-rpt.component';
 import { GaugeComponent } from './gauge/gauge.component';
+import { OpponentComponent } from './opponent/opponent.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { GaugeComponent } from './gauge/gauge.component';
     TimezoneTestComponent,
     GameItemComponent,
     MoveRptComponent,
-    GaugeComponent
+    GaugeComponent,
+    OpponentComponent
   ],
   imports: [
     BrowserModule,

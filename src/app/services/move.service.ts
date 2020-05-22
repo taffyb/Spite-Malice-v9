@@ -7,6 +7,7 @@ import {PositionsEnum, CardsEnum, MoveTypesEnum} from 's-n-m-lib';
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import * as common from './service.common';
+import {WsService} from './ws.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,8 @@ export class MoveService{
    private _moves:IMoveModel[][]=[]; //key by game UUID so can hold the moves for multiple games at same time.
    private _moveSubscribers:IMoveSubscriber[]=[];
 
-    constructor(private http:HttpClient){
+    constructor(private http:HttpClient,
+            private wsSvc:WsService){
         console.log(`MoveService.constructor`);
     }
 

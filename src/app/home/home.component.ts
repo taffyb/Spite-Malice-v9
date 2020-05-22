@@ -4,6 +4,7 @@ import {PlayerService} from '../services/player.service';
 import {GameService} from '../services/game.service';
 import {IGameModel} from '../classes/games';
 import {IPlayerModel} from 's-n-m-lib';
+import {WsService} from '../services/ws.service';
 
 @Component({
   selector: 'app-home',
@@ -18,11 +19,12 @@ export class HomeComponent implements OnInit {
           private router: Router,
           private route: ActivatedRoute,
           private gameSvc:GameService,
-          private playerSvc:PlayerService) {
+          private playerSvc:PlayerService,
+          private wsSvc:WsService) {
       console.log(`HomeComponent: Constructor`);
       this.player = playerSvc.getActivePlayer();
       this.games$= gameSvc.getGames$(this.player.uuid,3);
-      console.log(`Active Player :${JSON.stringify(this.player)}`);
+      wsSvc.login(this.player);
   }
 
   ngOnInit() {
