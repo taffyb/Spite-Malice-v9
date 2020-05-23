@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   player:IPlayerModel;
   game:IGameModel;
   games$;
+  opponents$;
   constructor(
           private router: Router,
           private route: ActivatedRoute,
@@ -24,11 +25,20 @@ export class HomeComponent implements OnInit {
       console.log(`HomeComponent: Constructor`);
       this.player = playerSvc.getActivePlayer();
       this.games$= gameSvc.getGames$(this.player.uuid,3);
+      this.opponents$=playerSvc.getOpponents$(this.player.uuid);
       wsSvc.login(this.player);
   }
 
   ngOnInit() {
       console.log(`HomeComponent: ngOnInit`);
+      this.wsSvc.onPlayerActive$().subscribe({
+          next:(p:IPlayerModel)=>{
+              console.log(`${p.name} is now active`);
+          },
+          error:(err)=>{
+              console.log(`onPlayerActive error: ${JSON.stringify(err)}`);
+          }
+      });
   }
   
   newGame(){

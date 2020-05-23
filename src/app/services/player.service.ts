@@ -4,7 +4,7 @@ import {Observable, of} from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 import * as common from './service.common';
-import {IPlayerModel} from 's-n-m-lib';
+import {IPlayerModel,Opponent} from 's-n-m-lib';
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +21,30 @@ export class PlayerService {
                           '222222':{uuid:'222222',name:'Player2'}
                          };
   private _activePlayer:IPlayerModel;
+  private _opponents:Opponent[];
+  private _opponents$:Observable<Opponent[]>;
 
   constructor(private http:HttpClient) {
   }
   getActivePlayer():IPlayerModel{
       return this._activePlayer;
   }
-  getOpponents$(uuid):Observable<IPlayerModel[]>{
-      return this.http.get<IPlayerModel[]>(`${common.endpoint}players/${uuid}/opponents`);
+  getOpponents$(uuid):Observable<Opponent[]>{
+      
+      this._opponents$= this.http.get<Opponent[]>(`${common.endpoint}players/${uuid}/opponents`).pipe(
+              tap((opponents)=>{
+                  this._opponents=opponents;
+              }
+          )
+      );    
+      return this._opponents$;
+  }
+  updateOpponentStatus(opponent:IPlayerModel){
+      this._opponents.forEach((opp)=>{
+          if(opp.uuid=opponent.uuid){
+              opp.online=true;
+          }
+      });
   }
   getPlayerByName$(name:string):Observable<IPlayerModel>{
       let player$:Observable<IPlayerModel>;
@@ -76,11 +92,7 @@ export class PlayerService {
       });
       return of(players);
   }
-  getAllPlayers$():Observable<IPlayerModel[]>{     
-//      const players$:Observable<IPlayerModel[]>= this._http.get<any>(`${common.endpoint}players`).pipe(
-//          tap((players) => console.log(`data.service.getPlayer(): ${players}`)),
-//          catchError(common.handleError<any>('getPlayers'))
-//       );
+  getAllPlayers$():Observable<IPlayerModel[]>{ 
       const players$:Observable<IPlayerModel[]>=of(this._players);
       this._players.forEach((p)=>{
           this._playersByGuid[p.uuid]=p;

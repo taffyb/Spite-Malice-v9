@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable,Observer } from 'rxjs';
 import {IMoveModel,IPlayerModel} from 's-n-m-lib';
+import {PlayerService} from './player.service';
 
 import * as socketIo from 'socket.io-client';
 
@@ -11,7 +12,7 @@ export class WsService {
     SERVER_URL='ws://localhost:4001/'
     private socket;
 
-    constructor(){
+    constructor(private playerSvc:PlayerService){
         this.socket = socketIo(this.SERVER_URL);
     }
 
@@ -22,18 +23,24 @@ export class WsService {
         this.socket.emit('message', message);
     }
     public login(player:IPlayerModel): void {
-        this.socket.emit('login', player);
+        this.socket.emit('login', {player:player});
     }
 
-    public onMessage(): Observable<IMoveModel> {
+    public onMessage$(): Observable<IMoveModel> {
         return new Observable<IMoveModel>(observer => {
             this.socket.on('message', (data: IMoveModel) => observer.next(data));
         });
     }
 
-    public onEvent(event: Event): Observable<any> {
+    public onEvent$(event: Event): Observable<any> {
         return new Observable<Event>(observer => {
             this.socket.on(event, () => observer.next());
+        });
+    }
+    public onPlayerActive$():Observable<IPlayerModel>{
+
+        return new Observable<IPlayerModel>(observer => {
+            this.socket.on('player-online', (p:IPlayerModel) => observer.next(p));
         });
     }
 }
