@@ -2,9 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import {ActivatedRoute, Router } from '@angular/router';
 import {PlayerService} from '../services/player.service';
 import {GameService} from '../services/game.service';
-import {IGameModel} from '../classes/games';
-import {IPlayerModel} from 's-n-m-lib';
 import {WsService} from '../services/ws.service';
+import {IGameModel} from '../classes/games';
+import {IPlayerModel, IInvitationModel} from 's-n-m-lib';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +16,8 @@ export class HomeComponent implements OnInit {
   game:IGameModel;
   games$;
   opponents$;
+  invitations:IInvitationModel[]=[];
+  
   constructor(
           private router: Router,
           private route: ActivatedRoute,
@@ -31,18 +33,43 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
       console.log(`HomeComponent: ngOnInit`);
-      this.wsSvc.onPlayerActive$().subscribe({
-          next:(p:IPlayerModel)=>{
-              console.log(`${p.name} is now active`);
+      this.wsSvc.onInvitation$().subscribe({
+          next:(invite)=>{this.invitations.push(invite);},
+          error:(err)=>{console.log(`onPlayerActive error: ${JSON.stringify(err)}`);}
+      });
+      this.wsSvc.onInvitationResponse$().subscribe({
+          next:(invite)=>{
+              if(invite.response){
+                  const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,invite.to.uuid); 
+                  this.wsSvc.joinGame(invite.to, game.uuid);
+                  this.router.navigate([`/play-area/${game.uuid}`]);
+              }
           },
-          error:(err)=>{
-              console.log(`onPlayerActive error: ${JSON.stringify(err)}`);
-          }
+          error:(err)=>{console.log(`onPlayerActive error: ${JSON.stringify(err)}`);}
+      });
+      this.wsSvc.onJoin$().subscribe({
+          next:(gameUuid)=>{
+              this.router.navigate([`/play-area/${gameUuid}`]);
+          },
+          error:(err)=>{console.log(`onPlayerActive error: ${JSON.stringify(err)}`);}
       });
   }
   
   newGame(){
       const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,"222222"); 
       this.router.navigate([`/play-area/${game.uuid}`]);
+  }
+  sendInvite(opponent:IPlayerModel){
+      console.log(`Asking ${opponent.name} to play a game`);
+      this.wsSvc.sendInvite(this.player,opponent);
+  }
+  sendInviteResponse(response:string,invite:IInvitationModel){
+      this.wsSvc.sendInviteResponse(response, invite);
+      
+      this.invitations.forEach((i:IInvitationModel,j)=>{
+          if(i.uuid===invite.uuid){
+              this.invitations.splice(j,1);
+          }
+      });
   }
 }

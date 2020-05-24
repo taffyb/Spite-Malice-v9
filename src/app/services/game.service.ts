@@ -1,5 +1,5 @@
 import {IGameModel, GameFactory, Game} from '../classes/games';
-import {ICardModel, Card} from 's-n-m-lib';
+import {ICardModel, Card, IPlayerModel} from 's-n-m-lib';
 import {PositionsEnum, CardsEnum,GameStatesEnum} from 's-n-m-lib';
 import {DealerService} from './dealer.service';
 import {Injectable} from '@angular/core';
@@ -26,16 +26,18 @@ export class GameService{
     getGame$(gameUuid:string):Observable<Game>{
         let o:Observable<Game>;
         let self=this;
+        console.log(`getGame$: ${gameUuid}`);
         return new Observable<Game>(subscriber => {
             if(!this._games[gameUuid]){   
                 const url = `${common.endpoint}games/${gameUuid}`;
+                console.log(`getGame$.url: ${url}`);
                 this.http.get<IGameModel>(url).subscribe({
                     next(g:IGameModel) { 
                         const game:Game= Game.fromModel(g); 
                         subscriber.next(game);
                         subscriber.complete();
                     },
-                    error(err) { console.error('Error calling ${url}: ${JSON.stringify(err)}'); }
+                    error(err) { console.error(`Error calling ${url}: ${JSON.stringify(err)}`); }
                   });
             }else{
                 console.log(`getGame$ get from cache`);
@@ -47,6 +49,10 @@ export class GameService{
     getGames$(playerUuid?:string,limit?:number):Observable<IGameModel[]>{
         const url = `${common.endpoint}games?${playerUuid?'playerUuid='+playerUuid:''}&${limit?'limit='+limit:''}`;
 //        console.log(`getGames$: ${url}`);
+        return this.http.get<IGameModel[]>(url);
+    }
+    getGamesWith$(player:IPlayerModel,opponent:IPlayerModel):Observable<IGameModel[]>{
+        const url = `${common.endpoint}games?${player.uuid?'playerUuid='+player.uuid:''}&opponent=${opponent.uuid}`;
         return this.http.get<IGameModel[]>(url);
     }
     newGame(name:string,player1Uuid:string,player2Uuid:string):Game{

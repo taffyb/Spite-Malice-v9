@@ -47,23 +47,26 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   APO=()=>{return this.game.activePlayer*this.pPE.PLAYER_2}; /*ACTIVE PLAYER OFFSET */
   
   constructor(
-          private router: Router,
-          private route: ActivatedRoute,
-          private gameSvc:GameService, 
-          private moveSvc:MoveService, 
-          private dealerSvc:DealerService, 
-          private playerSvc:PlayerService,  
-          private profileSvc:ProfileService, 
-          private renderer:Renderer2,
-          private wsSvc:WsService) { 
+              private router: Router,
+              private route: ActivatedRoute,
+              private gameSvc:GameService, 
+              private moveSvc:MoveService, 
+              private dealerSvc:DealerService, 
+              private playerSvc:PlayerService,  
+              private profileSvc:ProfileService, 
+              private renderer:Renderer2,
+              private wsSvc:WsService) { 
       console.log(`PlayAreaComponent: constructor`);
       route.params.subscribe(async (val) => {
           const gameUuid = val.gameUuid;
+          console.log(`gameUuid: ${gameUuid}`);
           if(gameUuid){
               try{
                   this.game = await gameSvc.getGame$(gameUuid).toPromise(); 
+                  console.log(`game: ${this.game}`);
                   this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
-                  this.profile = this.profileSvc.getActiveProfile();
+                  this.profile = this.profileSvc.getActiveProfile(); 
+                  console.log(`profile: ${this.profile}`);
                   this.game.onStateChange$().subscribe({
                       next:async (next)=>{
                           this.gameSvc.updateGameState(this.game.toModel());
@@ -82,7 +85,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                       complete:()=>{}
                   });
                   const activePlayer:IPlayerModel= playerSvc.getActivePlayer();
-                  wsSvc.joinGame(activePlayer.uuid,this.game.uuid);
+//                  wsSvc.joinGame(activePlayer.uuid,this.game.uuid);
 //                  this.game.getCards(this.pE.PLAYER_PILE).splice(0,this.game.getCards(this.pE.PLAYER_PILE).length);
 //                  this.game.getCards(this.pE.PLAYER_PILE).push(new Card(this.cE.ACE,this.pE.PLAYER_PILE));
 //                  this.game.getCards(this.pE.PLAYER_HAND_1).splice(0,this.game.getCards(this.pE.PLAYER_HAND_1).length);

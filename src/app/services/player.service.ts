@@ -4,6 +4,7 @@ import {Observable, of} from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 import * as common from './service.common';
+import {WsService} from './ws.service';
 import {IPlayerModel,Opponent} from 's-n-m-lib';
 
 @Injectable({
@@ -23,28 +24,52 @@ export class PlayerService {
   private _activePlayer:IPlayerModel;
   private _opponents:Opponent[];
   private _opponents$:Observable<Opponent[]>;
+  private _opponentObserver:any;
 
-  constructor(private http:HttpClient) {
+  constructor(private http:HttpClient,
+              private wsSvc:WsService) {
+
+    wsSvc.onPlayerActive$().subscribe({
+        next:(p:IPlayerModel)=>{
+            console.log(`${p.name} is now active`);
+            this.updateOpponentStatus(p);
+        },
+        error:(err)=>{
+            console.log(`onPlayerActive error: ${JSON.stringify(err)}`);
+        }
+    });
+    wsSvc.onDisconnect$().subscribe({
+        next:(opponent:IPlayerModel)=>{
+            console.log(`${opponent.name} is now offline`);
+            this.updateOpponentStatus(opponent);
+        },
+        error:(err)=>{
+            console.log(`onDisconnect$ error: ${JSON.stringify(err)}`);
+        }
+    });
   }
   getActivePlayer():IPlayerModel{
       return this._activePlayer;
   }
   getOpponents$(uuid):Observable<Opponent[]>{
-      
-      this._opponents$= this.http.get<Opponent[]>(`${common.endpoint}players/${uuid}/opponents`).pipe(
+      return new Observable<Opponent[]>((observer)=>{
+          this.http.get<Opponent[]>(`${common.endpoint}players/${uuid}/opponents`).pipe(
               tap((opponents)=>{
                   this._opponents=opponents;
+                  this._opponentObserver=observer;
+                  this._opponentObserver.next(this._opponents);
               }
-          )
-      );    
-      return this._opponents$;
+          )).subscribe();                  
+       });
   }
   updateOpponentStatus(opponent:IPlayerModel){
       this._opponents.forEach((opp)=>{
-          if(opp.uuid=opponent.uuid){
-              opp.online=true;
+          if(opp.uuid===opponent.uuid){
+              opp.online=(!opp.online);
           }
+          console.log(`opponent[${opp.uuid}] is online=${opp.online}`);
       });
+      this._opponentObserver.next(this._opponents);
   }
   getPlayerByName$(name:string):Observable<IPlayerModel>{
       let player$:Observable<IPlayerModel>;

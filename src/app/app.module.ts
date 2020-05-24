@@ -24,6 +24,7 @@ import { GameItemComponent } from './game-item/game-item.component';
 import { MoveRptComponent } from './move-rpt/move-rpt.component';
 import { GaugeComponent } from './gauge/gauge.component';
 import { OpponentComponent } from './opponent/opponent.component';
+import { InvitationComponent } from './invitation/invitation.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { OpponentComponent } from './opponent/opponent.component';
     GameItemComponent,
     MoveRptComponent,
     GaugeComponent,
-    OpponentComponent
+    OpponentComponent,
+    InvitationComponent
   ],
   imports: [
     BrowserModule,

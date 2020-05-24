@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {Opponent,IPlayerModel,IGameModel} from 's-n-m-lib';
+import { Observable,Observer,of } from 'rxjs';
+import {GameService} from '../services/game.service';
 
 @Component({
   selector: 'app-opponent',
@@ -6,10 +9,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./opponent.component.css']
 })
 export class OpponentComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
+  @Input()player:IPlayerModel;
+  @Input()opponent:Opponent;
+  @Output()onInvite:EventEmitter<IPlayerModel> = new EventEmitter<IPlayerModel>();
+  activeGames$:Observable<IGameModel>;
+  
+  constructor(private gameSvc:GameService) { 
+      
   }
 
+  ngOnInit() {
+      
+  }
+  newGameWith(){
+      this.onInvite.emit(this.opponent);
+  }
 }
