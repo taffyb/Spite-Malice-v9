@@ -28,7 +28,7 @@ export class PlayerService {
 
   constructor(private http:HttpClient,
               private wsSvc:WsService) {
-
+    console.log(`PlayerService.constructor`);
     wsSvc.onPlayerActive$().subscribe({
         next:(p:IPlayerModel)=>{
             console.log(`${p.name} is now active`);
@@ -92,6 +92,7 @@ export class PlayerService {
     return player$;
   }
   setActivePlayer(playerGuid){
+      console.log(`setActivePlayer(${playerGuid})`);
       this._activePlayer=this._playersByGuid[playerGuid];
   }
   getPlayer$(uuid:string):Observable<IPlayerModel>{

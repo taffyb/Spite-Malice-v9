@@ -55,11 +55,10 @@ export class GameService{
         const url = `${common.endpoint}games?${player.uuid?'playerUuid='+player.uuid:''}&opponent=${opponent.uuid}`;
         return this.http.get<IGameModel[]>(url);
     }
-    newGame(name:string,player1Uuid:string,player2Uuid:string):Game{
+    newGame(name:string,player1Uuid:string,player2Uuid:string,local:boolean):Game{
         const deck:number[] = this.dealerSvc.getDeck();
-        const g:IGameModel=GameFactory.newGame(name,player1Uuid, player2Uuid,deck);
+        const g:IGameModel=GameFactory.newGame(name,player1Uuid, player2Uuid,deck,local);
         const game:Game=Game.fromModel(g);
-        
         this._games[game.uuid]=game;
         this.saveGame(game);
         return game;
@@ -68,7 +67,7 @@ export class GameService{
         
         this.http.post<IGameModel>(`${common.endpoint}games`,game).subscribe(
                 (val) => {
-                    console.log(`saveGame Success`);
+                    console.log(`saveGame Success\n${JSON.stringify(game)}`);
                 },
                 response => {
                     console.error("Error Saving Game", response);

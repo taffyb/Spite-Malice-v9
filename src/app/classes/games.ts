@@ -13,6 +13,7 @@ export class Game extends libGame{
     
     static fromModel(model:any):Game{
         const g:Game=new Game();
+        g.local = model.local;
         g.uuid = model.uuid;
         g.name= model.name;
         g.player1Uuid=model.player1Uuid;

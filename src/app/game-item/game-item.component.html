@@ -1,4 +1,7 @@
-<div>{{game.name}} [{{gameStatesEnum[game.state]}}] 
-	<a  routerLink="/play-area/{{game.uuid}}">open</a> 
+<div>
+	<span [ngClass]="{'game':true,'active':isMyTurn(),'inactive':!isMyTurn()}"> 
+		{{game.name}} [{{gameStatesEnum[game.state]}}] 
+	</span>&nbsp;
+	<a  routerLink="/play-area/{{game.uuid}}">open</a> &nbsp;
 	<a  routerLink="/move-rpt/{{game.uuid}}">reports</a>
 </div>

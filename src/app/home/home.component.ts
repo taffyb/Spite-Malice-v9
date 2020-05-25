@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
       this.wsSvc.onInvitationResponse$().subscribe({
           next:(invite)=>{
               if(invite.response){
-                  const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,invite.to.uuid); 
+                  const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,invite.to.uuid,false); 
                   this.wsSvc.joinGame(invite.to, game.uuid);
                   this.router.navigate([`/play-area/${game.uuid}`]);
               }
@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
   }
   
   newGame(){
-      const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,"222222"); 
+      const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,"222222",true); 
       this.router.navigate([`/play-area/${game.uuid}`]);
   }
   sendInvite(opponent:IPlayerModel){

@@ -36,6 +36,7 @@ export class AppComponent implements OnInit {
 
     loadProfile(player){
         if(player){
+//            this.playerSvc.setActivePlayer(player.guid);
             this.profile$=this.profileSvc.getProfile$(player.guid); 
             this.router.navigate(['/home']);
         }
@@ -43,7 +44,7 @@ export class AppComponent implements OnInit {
     async guestEntry(){
         this.player = await this.playerSvc.getPlayerByName$("Player1").toPromise();
         this.profile$=this.profileSvc.getDefaultProfile$();
-        const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,"222222"); 
+        const game:IGameModel = this.gameSvc.newGame("new",this.player.uuid,"222222",true); 
         this.router.navigate([`/play-area/${game.uuid}`]);
     }
 }

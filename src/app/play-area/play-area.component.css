@@ -3,6 +3,7 @@
 	/*border:2px solid red;*/
 	position:absolute;
 }
+
 .player{
 	display:inline-flex;
 	padding-bottom:15px;
@@ -15,10 +16,16 @@
 }
 .heading{
 	/*text-align:centre;*/
-	background:gray;
+	/*background:gray;*/
 	color:white;
 	width:100%;
 	border:solid black 1px;
+}
+.heading.active{
+	background:#44d60b;
+}
+.heading.inactive{
+	background:#a31217;
 }
 .player-pile{
   	border-right:solid grey 5px;

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input,ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import {Observable} from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import {ActivatedRoute, Router } from '@angular/router';
 
 import {Options} from '../classes/options';
@@ -35,6 +36,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   to:SelectedCard=new SelectedCard(-1,-1);
   moves:IMoveModel[]=[];
   message="";
+  players:IPlayerModel[];
   
   //animation control
   NO_MOVE={top:-1,left:-1};
@@ -63,10 +65,13 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           if(gameUuid){
               try{
                   this.game = await gameSvc.getGame$(gameUuid).toPromise(); 
-                  console.log(`game: ${this.game}`);
-                  this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]);
+                  console.log(`game: ${JSON.stringify(this.game.toModel())}`);
+                  this.players$=this.playerSvc.getPlayers$([this.game.player1Uuid,this.game.player2Uuid]).pipe(
+                      tap((players)=>{
+                          this.players=players;
+                      }));
                   this.profile = this.profileSvc.getActiveProfile(); 
-                  console.log(`profile: ${this.profile}`);
+                  console.log(`profile: ${JSON.stringify(this.profile)}`);
                   this.game.onStateChange$().subscribe({
                       next:async (next)=>{
                           this.gameSvc.updateGameState(this.game.toModel());
@@ -297,9 +302,17 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
   }
   getOptions(position:number):Options{
-      let opt:Options=new Options();
+      const opt:Options=new Options();
+      let isActivePlayerSelectable:boolean=false;
       let cardAtPosition:Card;
-      
+  
+      if(this.game.local){
+          isActivePlayerSelectable=true;
+      }else{
+          const activePlayer = this.playerSvc.getActivePlayer();
+          isActivePlayerSelectable= (this.players[this.game.activePlayer].uuid===activePlayer.uuid);
+      }
+  
       opt.selected=(this.from.position==position);
       if([this.pE.DECK,this.pE.RECYCLE].includes(position)){
           opt.showCardFace=false;
@@ -341,31 +354,35 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               case this.pE.PLAYER_HAND_3+(this.APO()):
               case this.pE.PLAYER_HAND_4+(this.APO()):
               case this.pE.PLAYER_HAND_5+(this.APO()):
-                  if(this.from.position>-1){ //a card is selected
-                      if(this.from.position==position){
-                          opt.selected=true;
+                  if(isActivePlayerSelectable){
+                      if(this.from.position>-1){ //a card is selected
+                          if(this.from.position==position){
+                              opt.selected=true;
+                              opt.selectableFrom=true;
+                          }
+                      }else{
                           opt.selectableFrom=true;
                       }
-                  }else{
-                      opt.selectableFrom=true;
                   }
                   break;
               case this.pE.PLAYER_STACK_1+(this.APO()):
               case this.pE.PLAYER_STACK_2+(this.APO()):
               case this.pE.PLAYER_STACK_3+(this.APO()):
               case this.pE.PLAYER_STACK_4+(this.APO()): 
-                  if(this.from.position>-1){ //a card is selected
-                      if(this.from.position==position){
-                          opt.selected=true;
+                  if(isActivePlayerSelectable){
+                      if(this.from.position>-1){ //a card is selected
+                          if(this.from.position==position){
+                              opt.selected=true;
+                              opt.selectableFrom=true;
+                          }      
+                          if(this.from.position!=position && 
+                             this.canDiscard() && 
+                             this.from.position!=this.pE.PLAYER_PILE+(this.APO())){
+                              opt.selectableTo=true;
+                          }
+                      }else{
                           opt.selectableFrom=true;
-                      }      
-                      if(this.from.position!=position && 
-                         this.canDiscard() && 
-                         this.from.position!=this.pE.PLAYER_PILE+(this.APO())){
-                          opt.selectableTo=true;
                       }
-                  }else{
-                      opt.selectableFrom=true;
                   }
                   opt.canDiscard=this.canDiscard();
                   break;
@@ -416,11 +433,21 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       return {top:clientRect.top,left:clientRect.left};
   }
   playAgain(){
-      const g:Game = this.gameSvc.newGame("new", this.game.player1Uuid, this.game.player2Uuid);
+      const g:Game = this.gameSvc.newGame("new", this.game.player1Uuid, this.game.player2Uuid,this.game.local);
       this.message="";
       this.game = g;
       const url:string = `/play-area/${g.uuid}`;
       console.log(`route to new game: ${url}`);
       this.router.navigate([url]);
+  }
+  isActivePlayer(pIdx:number):boolean{
+      let isActivePlayer:boolean=false;
+      if(this.game.local){
+          isActivePlayer =(pIdx==this.game.activePlayer);
+      }else{
+          isActivePlayer =(pIdx==this.game.activePlayer) && 
+                          (this.players[pIdx].uuid == this.playerSvc.getActivePlayer().uuid);
+      }
+      return isActivePlayer;
   }
 }

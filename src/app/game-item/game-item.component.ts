@@ -1,5 +1,6 @@
 import { Component, OnInit, Input} from '@angular/core';
-import {IGameModel, GameStatesEnum} from 's-n-m-lib';
+import {IGameModel, IPlayerModel, GameStatesEnum} from 's-n-m-lib';
+import {PlayerService} from '../services/player.service';
 
 @Component({
   selector: 'app-game-item',
@@ -9,9 +10,20 @@ import {IGameModel, GameStatesEnum} from 's-n-m-lib';
 export class GameItemComponent implements OnInit {
   @Input()game:IGameModel;
   gameStatesEnum = GameStatesEnum;
-  constructor() { }
+  constructor( 
+          private playerSvc:PlayerService) { }
 
   ngOnInit() {
+      console.log(`game=${JSON.stringify(this.game)}`);
   }
 
+  isMyTurn():boolean{
+      let isMyTurn:boolean=false;
+      const me:IPlayerModel = this.playerSvc.getActivePlayer();
+      const playersUuids:string[] = [this.game.player1Uuid,this.game.player2Uuid];
+      
+      console.log(`activePlayer=${this.game.activePlayer}, playerUuids=${JSON.stringify(playersUuids)}`);
+//      return false;
+      return (playersUuids[this.game.activePlayer] === me.uuid);
+  }
 }
