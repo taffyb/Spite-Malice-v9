@@ -26,6 +26,8 @@ import { GaugeComponent } from './gauge/gauge.component';
 import { OpponentComponent } from './opponent/opponent.component';
 import { InvitationComponent } from './invitation/invitation.component';
 
+import { AngularPageVisibilityModule } from 'angular-page-visibility';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,7 +55,8 @@ import { InvitationComponent } from './invitation/invitation.component';
     BrowserAnimationsModule,
     HttpClientModule,
     MaterialModules,
-    FormsModule
+    FormsModule,
+    AngularPageVisibilityModule
   ],
   providers: [],
   bootstrap: [AppComponent],

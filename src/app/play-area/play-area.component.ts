@@ -1,5 +1,9 @@
 import { Component, OnInit, Input,ViewChild, ElementRef, Renderer2 } from '@angular/core';
-//import { OnPageVisible, OnPageHidden,OnPageVisibilityChange } from '@angular/core';
+import {
+    OnPageVisible, OnPageHidden,
+    OnPageVisibilityChange,
+    AngularPageVisibilityStateEnum,
+    OnPagePrerender, OnPageUnloaded} from 'angular-page-visibility';
 import {Observable} from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import {ActivatedRoute, Router } from '@angular/router';
@@ -38,6 +42,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   moves:IMoveModel[]=[];
   message="";
   players:IPlayerModel[];
+  pageVisible:boolean=true;
   
   //animation control
   NO_MOVE={top:-1,left:-1};
@@ -111,27 +116,21 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   ngOnInit() {
       console.log(`PlayAreaComponent: ngOnInit`);
   }
-//  @OnPageVisible()
-//  logWhenPageVisible(): void {
+  @OnPageVisible()
+  logWhenPageVisible(): void {
+      this.pageVisible=true;
+      this.nextMove();
 //      console.log( 'OnPageVisible' );
 //      console.log( 'visible' );
-//  }
-//
-//  @OnPageHidden()
-//  logWhenPageHidden(): void {
+  }
+
+  @OnPageHidden()
+  logWhenPageHidden(): void {
+      this.pageVisible=false;
 //      console.log( 'OnPageHidden' );
 //      console.log( 'hidden' );
-//  }
-//
-//  @OnPageVisibilityChange()
-//  logWhenPageVisibilityChange( isPageVisible: boolean ): void {
-//      console.log( 'OnPageVisibilityChange' );
-//      if ( isPageVisible ) {
-//          console.log( 'visible' );
-//      } else {
-//          console.log( 'hidden' );
-//      }
-//  }
+  }
+
 
 //  moveObserver={
 //      next: function(next) {
@@ -158,7 +157,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
   nextMove(){
       let m:IMoveModel;
-      if(this.moves.length>0){
+      if(this.moves.length>0 && this.pageVisible){
           m = this.moves.splice(0,1)[0]
           if(this.profile.animation.animateYN){
               let animate:boolean=true;
