@@ -17,7 +17,7 @@ export class DealerService extends Dealer{
       moves=super.fillHand(activePlayer,game);
 
       const addMove = new Promise((resolve,reject)=>{
-          this.moveSvc.addMoves(game.uuid,"", moves);
+          this.moveSvc.addMoves(game,"", moves);
       });
       return moves;
   }

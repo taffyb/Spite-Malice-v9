@@ -4,7 +4,7 @@ import {PlayerService} from '../services/player.service';
 import {GameService} from '../services/game.service';
 import {WsService} from '../services/ws.service';
 import {IGameModel} from '../classes/games';
-import {IPlayerModel, IInvitationModel} from 's-n-m-lib';
+import {IPlayerModel, IInvitationMessage} from 's-n-m-lib';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   game:IGameModel;
   games$;
   opponents$;
-  invitations:IInvitationModel[]=[];
+  invitations:IInvitationMessage[]=[];
   
   constructor(
           private router: Router,
@@ -63,10 +63,10 @@ export class HomeComponent implements OnInit {
       console.log(`Asking ${opponent.name} to play a game`);
       this.wsSvc.sendInvite(this.player,opponent);
   }
-  sendInviteResponse(response:string,invite:IInvitationModel){
+  sendInviteResponse(response:string,invite:IInvitationMessage){
       this.wsSvc.sendInviteResponse(response, invite);
       
-      this.invitations.forEach((i:IInvitationModel,j)=>{
+      this.invitations.forEach((i:IInvitationMessage,j)=>{
           if(i.uuid===invite.uuid){
               this.invitations.splice(j,1);
           }

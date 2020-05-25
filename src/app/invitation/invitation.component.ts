@@ -1,5 +1,5 @@
 import { Component, OnInit,Input, Output, EventEmitter } from '@angular/core';
-import {IInvitationModel} from 's-n-m-lib';
+import {IInvitationMessage} from 's-n-m-lib';
 
 @Component({
   selector: 'app-invitation',
@@ -7,9 +7,9 @@ import {IInvitationModel} from 's-n-m-lib';
   styleUrls: ['./invitation.component.css']
 })
 export class InvitationComponent implements OnInit {
-  @Input()invite:IInvitationModel;
-  @Output()onAccept:EventEmitter<IInvitationModel>=new EventEmitter<IInvitationModel>();
-  @Output()onDecline:EventEmitter<IInvitationModel>=new EventEmitter<IInvitationModel>();
+  @Input()invite:IInvitationMessage;
+  @Output()onAccept:EventEmitter<IInvitationMessage>=new EventEmitter<IInvitationMessage>();
+  @Output()onDecline:EventEmitter<IInvitationMessage>=new EventEmitter<IInvitationMessage>();
   
   constructor() { }
 

@@ -67,7 +67,7 @@ export class GameService{
         
         this.http.post<IGameModel>(`${common.endpoint}games`,game).subscribe(
                 (val) => {
-                    console.log(`saveGame Success\n${JSON.stringify(game)}`);
+                    console.log(`saveGame Success [${game.uuid}]`);
                 },
                 response => {
                     console.error("Error Saving Game", response);

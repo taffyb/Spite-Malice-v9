@@ -1,4 +1,5 @@
 import { Component, OnInit, Input,ViewChild, ElementRef, Renderer2 } from '@angular/core';
+//import { OnPageVisible, OnPageHidden,OnPageVisibilityChange } from '@angular/core';
 import {Observable} from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import {ActivatedRoute, Router } from '@angular/router';
@@ -110,7 +111,27 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   ngOnInit() {
       console.log(`PlayAreaComponent: ngOnInit`);
   }
-
+//  @OnPageVisible()
+//  logWhenPageVisible(): void {
+//      console.log( 'OnPageVisible' );
+//      console.log( 'visible' );
+//  }
+//
+//  @OnPageHidden()
+//  logWhenPageHidden(): void {
+//      console.log( 'OnPageHidden' );
+//      console.log( 'hidden' );
+//  }
+//
+//  @OnPageVisibilityChange()
+//  logWhenPageVisibilityChange( isPageVisible: boolean ): void {
+//      console.log( 'OnPageVisibilityChange' );
+//      if ( isPageVisible ) {
+//          console.log( 'visible' );
+//      } else {
+//          console.log( 'hidden' );
+//      }
+//  }
 
 //  moveObserver={
 //      next: function(next) {
@@ -170,11 +191,16 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       let duration:number = DEFAULT_DURATIONS[this.mtE[m.type]];
       switch(m.type){
           case this.mtE.PLAYER:
-              if(m.from>=this.pE.PLAYER_PILE && m.from<=this.pE.PLAYER_STACK_4){
+              if(m.playerUuid==this.playerSvc.getActivePlayer().uuid){
                   duration = duration*this.profile.animation.animate.player;
               }else{
                   duration = duration*this.profile.animation.animate.opponent;
               }
+//              if(m.from>=this.pE.PLAYER_PILE && m.from<=this.pE.PLAYER_STACK_4){
+//                  duration = duration*this.profile.animation.animate.player;
+//              }else{
+//                  duration = duration*this.profile.animation.animate.opponent;
+//              }
               break;
           case this.mtE.DEALER:
               duration = duration*this.profile.animation.animate.dealer;
@@ -293,7 +319,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               move.type = MoveTypesEnum.PLAYER;
               move.isDiscard=this.isDiscard(this.to.position);
               const players = await this.players$.toPromise();
-              this.moveSvc.addMove(this.game.uuid,players[this.game.activePlayer].uuid, move);
+              this.moveSvc.addMove(this.game,players[this.game.activePlayer].uuid, move);
               
               //reset selected Positions
               this.from = new SelectedCard(-1,-1);

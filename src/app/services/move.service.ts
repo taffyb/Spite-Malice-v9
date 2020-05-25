@@ -1,13 +1,14 @@
 import {Observable, of} from 'rxjs';
 import { map } from 'rxjs/operators';
 import {IGameModel, Game} from '../classes/games';
-import {IMoveModel, Move} from 's-n-m-lib';
+import {IMoveModel,IPlayerModel,Player, Move} from 's-n-m-lib';
 import {IMoveSubscriber} from '../classes/move.subscriber';
-import {PositionsEnum, CardsEnum, MoveTypesEnum} from 's-n-m-lib';
+import {PositionsEnum, CardsEnum, MoveTypesEnum,IMoveMessage} from 's-n-m-lib';
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import * as common from './service.common';
 import {WsService} from './ws.service';
+import {PlayerService} from './player.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +18,17 @@ export class MoveService{
    private _moveSubscribers:IMoveSubscriber[]=[];
 
     constructor(private http:HttpClient,
-            private wsSvc:WsService){
+            private wsSvc:WsService,
+            private playerSvc:PlayerService){
         console.log(`MoveService.constructor`);
+        
+        wsSvc.onRecieveMoves$().subscribe({
+            next:(moves:IMoveMessage)=>{
+                console.log(`MoveService.wsSvc.onRecieveMoves$ ${JSON.stringify(moves)}`);
+                this.publishMoves(moves.gameUuid,moves.moves)
+            },
+            error:(err)=>{console.error(`onReceiveMoves error: ${JSON.stringify(err)}`)}
+        });
     }
 
     subscribe(subscriber:IMoveSubscriber){
@@ -34,29 +44,39 @@ export class MoveService{
         });
     }
     
-    addMove(gameUuid:string,playerUuid:string,m:IMoveModel){
+    addMove(game:IGameModel,playerUuid:string,m:IMoveModel){
         let moves:IMoveModel[]=[];
         moves.push(m);
-        this.addMoves(gameUuid,playerUuid,moves);
+        this.addMoves(game,playerUuid,moves);
     }
-    addMoves(gameUuid:string,playerUuid:string,ms:IMoveModel[]){
+    addMoves(game:IGameModel,playerUuid:string,ms:IMoveModel[]){
 
         let moves:IMoveModel[];
-        if(!this._moves[gameUuid]){
+        if(!this._moves[game.uuid]){
             moves=[];
-            this._moves[gameUuid]=moves;
+            this._moves[game.uuid]=moves;
         }else{
-            moves=this._moves[gameUuid];
+            moves=this._moves[game.uuid];
         }
         ms.forEach(m=>{
-            m.gameUuid=gameUuid;
+            m.gameUuid=game.uuid;
             if(playerUuid){m.playerUuid=playerUuid;}
-            m.id = this._moves[gameUuid].length+1;
+            m.id = this._moves[game.uuid].length+1;
             moves.push(m);
         });
         if(moves.length>0){
-            this.publishMoves(gameUuid,ms);
-            this.saveMoves(gameUuid,ms);
+            this.publishMoves(game.uuid,ms);
+            if(!game.local){
+                const player1:IPlayerModel = new Player(); player1.uuid=game.player1Uuid;
+                const player2:IPlayerModel = new Player(); player2.uuid=game.player2Uuid;
+                const players:IPlayerModel[]=[player1,player2];
+                const activePlayer:number=Number.parseInt(""+game.activePlayer);
+                const opponent = (activePlayer===1?0:1);
+                const moveMessage:IMoveMessage=
+                    {moves:ms,from:players[activePlayer],to:players[opponent],gameUuid:game.uuid};
+                this.wsSvc.publishMoves(moveMessage);
+            }
+            this.saveMoves(game.uuid,ms);
         }
     }
     saveMoves(gameUuid:string,ms:IMoveModel[]){
@@ -84,9 +104,9 @@ export class MoveService{
             m.type=MoveTypesEnum.RECYCLE;
             moves.push(m);
         }
-        this.addMoves(game.uuid,"",moves);
+        this.addMoves(game,"",moves);
     }
-    getMoves$(gameUuid:IGameModel,playerUuid?:string,limit?:number):Observable<IMoveModel[]>{
+    getMoves$(gameUuid:string,playerUuid?:string,limit?:number):Observable<IMoveModel[]>{
         const url = `${common.endpoint}games/${gameUuid}/moves?${playerUuid?'playerUuid='+playerUuid:''}&${limit?'limit='+limit:''}`;
         return this.http.get<IMoveModel[]>(url).pipe(
             map((data)=>{
