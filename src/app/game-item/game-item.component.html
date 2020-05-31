@@ -1,5 +1,5 @@
 <div>
-	<span [ngClass]="{'game':true,'active':isMyTurn(),'inactive':!isMyTurn()}"> 
+	<span class='game' [ngClass]="{'active':isMyTurn(),'inactive':!isMyTurn()}"> 
 		{{game.name}} [{{gameStatesEnum[game.state]}}] 
 	</span>&nbsp;
 	<a  routerLink="/play-area/{{game.uuid}}">open</a> &nbsp;
