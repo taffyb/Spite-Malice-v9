@@ -23,7 +23,7 @@
     "@angular/router": "~8.2.11",
     "@types/d3": "^5.7.2",
     "@types/jest": "^25.2.1",
-    "@types/karma": "^5.0.0",
+    "@types/karma": "^6.3.3",
     "@types/socket.io": "^2.1.5",
     "angular-page-visibility": "^9.0.0",
     "d3": "^7.6.1",
